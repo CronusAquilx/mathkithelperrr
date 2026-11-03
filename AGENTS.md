@@ -53,4 +53,6 @@
 - Windows title shortcuts store stable catalog identifiers in shared account preferences; arcade launches reuse GamesView, movie launches use router navigation, and cloud shortcuts retain standalone playback.
 - First-account personalization edits a local draft and composes the same preview and controls as Settings; save the confirmed appearance before marking account setup complete.
 - Windows tab/window state restores from account-keyed session storage on refresh; route-backed windows reconstruct from the current URL to prevent stale detail screens.
+- Restore desktop sessions with a single reducer replacement so identity changes never merge another account's windows or unminimize saved windows.
+- AuthProvider owns the session subscriber and clears protected query caches on sign-out; token refresh updates credentials without remounting the desktop.
 - Movies uses one shared cinematic catalog presentation across every shell so navigation and account watchlists remain consistent.

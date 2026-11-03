@@ -111,7 +111,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <AuthProvider queryClient={queryClient}>
         <VisitProvider>
           <VisitGate><Outlet /></VisitGate>
         </VisitProvider>
