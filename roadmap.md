@@ -1,5 +1,11 @@
 # Birchbeat import roadmap
 
+## Current request — end-to-end reliability
+- [ ] Repair confirmed window restoration, layout switching, session and movie/search failures while preserving existing apps.
+- [ ] Run full tests and lint; verify signed-in persistence and desktop/mobile interactions.
+- [ ] Document setup, environment names, provider limitations and security scan status.
+- [ ] Verify canonical GitHub main access and delivery; do not overwrite another repository.
+
 ## Current request — shared looks and cinema
 - [x] Use the chosen uploaded logo and star favicon.
 - [x] Synchronize looks across layouts with an opt-out and account-owned presets in Settings and basic-URL opening.

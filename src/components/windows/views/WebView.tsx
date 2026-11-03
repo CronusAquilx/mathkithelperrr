@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 
 
 type Result = { title: string; url: string; snippet: string };
-type Snap = { title: string; query: string; results: Result[] | null; url: string | null };
+type Snap = { title: string; query: string; results: Result[] | null; url: string | null; error?: string | null };
 type Tab = Snap & { id: number; loading: boolean; back: Snap[]; fwd: Snap[]; nonce: number };
 let nextId = 1;
 const blank = (): Tab => ({ id: nextId++, title: "New tab", query: "", results: null, url: null, loading: false, back: [], fwd: [], nonce: 0 });
@@ -55,16 +55,24 @@ export function WebView({ initialQ }: { initialQ?: string | undefined } = {}) {
     if (/^https?:\/\/\S+$/i.test(q) || /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(q)) {
       const url = q.startsWith("http") ? q : `https://${q}`;
       if (prefs.openLinksInNewTab) { window.open(url, "_blank", "noopener"); return; }
-      patch(id, { url, title: new URL(url).hostname, query: q });
+      patch(id, { url, title: new URL(url).hostname, query: q, error: null });
       return;
     }
     if (prefs.searchEngine === "astra") {
-      patch(id, { loading: true, query: q, title: q, url: null });
-      const { results } = await search({ data: { q } }).catch(() => ({ results: [] as Result[] }));
-      patch(id, { results, loading: false });
+      await runSearch(id, q);
       return;
     }
-    patch(id, { url: searchUrl(q, prefs.searchEngine), title: q, query: q, results: null });
+    patch(id, { url: searchUrl(q, prefs.searchEngine), title: q, query: q, results: null, error: null });
+  }
+
+  async function runSearch(id: number, q: string) {
+    patch(id, { loading: true, query: q, title: q, url: null, results: null, error: null });
+    try {
+      const { results } = await search({ data: { q } });
+      patch(id, { results, loading: false });
+    } catch (error) {
+      patch(id, { loading: false, error: error instanceof Error ? error.message : "Web search is unavailable. Please try again." });
+    }
   }
 
   function newTab() {
@@ -113,12 +121,13 @@ export function WebView({ initialQ }: { initialQ?: string | undefined } = {}) {
           <ProxiedFrame key={`${tab.url}#${tab.nonce}`} url={tab.url} title={tab.title} prefs={prefs} onFail={() => {
             if (!/^https?:\/\//i.test(tab.query) && !/^[\w-]+(\.[\w-]+)+/.test(tab.query)) {
               const id = tab.id, q = tab.query;
-              patch(id, { url: null, loading: true });
-              void search({ data: { q } }).catch(() => ({ results: [] as Result[] })).then(({ results }) => patch(id, { results, loading: false }));
+              void runSearch(id, q);
             }
           }} />
         ) : tab.loading ? (
           <p className="p-6 text-sm text-muted-foreground">Searching…</p>
+        ) : tab.error ? (
+          <div className="space-y-3 p-6"><p role="alert" className="text-sm text-destructive">{tab.error}</p><Button variant="outline" onClick={() => void runSearch(tab.id, tab.query)}><RotateCw/>Retry</Button></div>
         ) : tab.results ? (
           <div className="mx-auto max-w-2xl space-y-5 px-4 py-6">
             {tab.results.length === 0 && <p className="text-sm text-muted-foreground">No results.</p>}
