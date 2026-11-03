@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
 import { executeStorage, missingFluxNames } from "./flux.server";
 import { MAX_UPLOAD_BYTES, storageInput } from "./schema";
