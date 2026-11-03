@@ -91,13 +91,11 @@ describe("Flux storage account boundaries", () => {
     expect(JSON.stringify(result)).not.toContain("sensitive-provider-detail");
   });
   it("scopes list requests and projects safe metadata", async () => {
-    const fetcher = vi
-      .fn()
-      .mockResolvedValue(
-        response({
-          objects: [{ key: `birchos/${user}/photos/a.jpg`, size: 5, internal: "private" }],
-        }),
-      );
+    const fetcher = vi.fn().mockResolvedValue(
+      response({
+        objects: [{ key: `birchos/${user}/photos/a.jpg`, size: 5, internal: "private" }],
+      }),
+    );
     const result = await executeStorage(
       user,
       { operation: "list", folder: "photos" },

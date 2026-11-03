@@ -8,7 +8,9 @@ export const relativeKey = z
   .refine((key) => {
     return (
       !/[\\%?#:]/.test(key) &&
-      !Array.from(key).some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127) &&
+      !Array.from(key).some(
+        (character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127,
+      ) &&
       !key.startsWith("/") &&
       key
         .split("/")
