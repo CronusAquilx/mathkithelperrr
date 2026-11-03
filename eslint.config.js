@@ -34,10 +34,11 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
       "no-empty": ["error", { allowEmptyCatch: true }],
     },
   },
   eslintPluginPrettier,
   // Formatting remains an explicit command; lint checks correctness without a whole-project formatting rewrite.
-  { rules: { "prettier/prettier": "off", "@typescript-eslint/no-explicit-any": "warn" } },
+  { rules: { "prettier/prettier": "off" } },
 );
