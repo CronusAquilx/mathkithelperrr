@@ -1,5 +1,12 @@
 # Birchbeat import roadmap
 
+## Production finalization
+- [ ] Audit all routes, runtime boundaries, metadata and navigation; preserve existing features.
+- [ ] Repair movie test failures and run complete tests/lint; inspect platform typecheck and production build results.
+- [ ] Diagnose signed PUT CORS for exact public and preview origins; verify Storage request flows without exposing secrets.
+- [ ] Check authenticated Windows, PS5/Xbox and mobile navigation in browser.
+- [ ] Document only genuine external blockers and request publication after app-side checks pass; report deployment evidence.
+
 ## Current request — Fluxlinkk Storage integration
 - [x] Inspect Birch authentication, shared app views, existing schema/RLS and configured secret names.
 - [x] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
