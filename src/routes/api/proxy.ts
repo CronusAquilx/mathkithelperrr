@@ -64,8 +64,8 @@ async function handle(request: Request) {
   let upstream: Response;
   try {
     upstream = await fetch(url.toString(), { method, headers, body, redirect: "manual" });
-  } catch (e) {
-    return new Response(`Could not reach ${url.hostname}: ${e instanceof Error ? e.message : String(e)}`, { status: 502 });
+  } catch {
+    return new Response("Could not reach this website. Please retry.", { status: 502 });
   }
 
   const out: [string, string][] = [];

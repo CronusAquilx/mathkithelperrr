@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { activatePreferenceAccount, flushPreferences } from "@/lib/astra/prefs";
+import { Button } from "@/components/ui/button";
 
 type AuthState = { session: Session | null; user: User | null; loading: boolean; guest: boolean };
 type AuthCtx = AuthState & { enterGuest: () => void; exitGuest: () => void };
@@ -18,6 +19,7 @@ function writeGuest(on: boolean) {
 /** Guest mode shows the same signed-in layouts with no session: nothing can be saved because the database only accepts signed-in users. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ session: null, user: null, loading: true, guest: false });
+  const [startupError, setStartupError] = useState(false);
   useEffect(() => {
     let transition = 0; let live = true;
     const apply = (session: Session | null) => {
@@ -29,14 +31,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (live && current === transition) setState({ session, user: session?.user ?? null, loading: false, guest: !session && readGuest() });
       }).catch(() => {}); }, 0);
     };
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => apply(session));
-    supabase.auth.getSession().then(({ data }) => apply(data.session));
+    let unsubscribe: (() => void) | undefined;
+    const failed = () => { if (live) { setStartupError(true); setState(s => ({ ...s, loading: false })); } };
+    try {
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => apply(session));
+      unsubscribe = () => sub.subscription.unsubscribe();
+      void supabase.auth.getSession().then(({ data, error }) => { if (error) failed(); else apply(data.session); }).catch(failed);
+    } catch { failed(); }
     const onExit = () => setState(s => ({ ...s, guest: false }));
     window.addEventListener(GUEST_KEY, onExit);
-    return () => { live = false; sub.subscription.unsubscribe(); window.removeEventListener(GUEST_KEY, onExit); };
+    return () => { live = false; unsubscribe?.(); window.removeEventListener(GUEST_KEY, onExit); };
   }, []);
   const enterGuest = () => { writeGuest(true); setState(s => ({ ...s, session: null, user: null, guest: true })); };
   const exitGuest = () => { writeGuest(false); setState(s => ({ ...s, guest: false })); };
+  if (startupError) return <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background p-6 text-foreground"><h1 className="text-2xl font-semibold">Birch OS</h1><p role="alert">Account connection could not start. Please check the app configuration or connection and retry.</p><Button onClick={() => window.location.reload()}>Retry</Button></main>;
   return <AuthContext.Provider value={{ ...state, enterGuest, exitGuest }}>{children}</AuthContext.Provider>;
 }
 

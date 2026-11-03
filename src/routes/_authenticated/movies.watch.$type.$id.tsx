@@ -223,6 +223,17 @@ function Watch() {
     return () => clearTimeout(timer);
   }, [server, season, episode, n, loaded, voice, manualSource]);
 
+  const toggleFullscreen = useCallback(async () => {
+    const player = playerRef.current;
+    if (!player) return;
+    if (fakeFullscreen) { setFakeFullscreen(false); return; }
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (player.requestFullscreen) await player.requestFullscreen();
+      else setFakeFullscreen(true);
+    } catch { setFakeFullscreen(true); }
+  }, [fakeFullscreen]);
+
   const s = STREAMING_SERVERS.find((x) => x.id === server) ?? STREAMING_SERVERS[0];
   if (!s) return null;
   const seasons = tv.data?.seasons?.filter((x) => x.season_number > 0) ?? [];
@@ -235,22 +246,6 @@ function Watch() {
   const baseUrl = usingAnikoto ? anikotoSearchUrl(d?.title || d?.name || '') : usingAnimeSource ? animeVoiceUrl(animeId, episode, voice === 'en' ? 'en' : 'ja') : usingIcuAnime ? animeIcuVoiceUrl(anilistId, episode, voice === 'en' ? 'en' : 'ja') : s.url(n, type, isTV ? season : undefined, isTV ? episode : undefined);
   const directUrl = `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}autoplay=1${caption !== "off" ? `&sub_lang=${caption}` : ""}${startAt ? `&startAt=${startAt}&progress=${startAt}&t=${startAt}&start=${startAt}` : ""}`;
   const embedUrl = usingAnikoto ? baseUrl : directUrl;
-
-  const toggleFullscreen = useCallback(async () => {
-    const player = playerRef.current;
-    if (!player) return;
-    if (fakeFullscreen) {
-      setFakeFullscreen(false);
-      return;
-    }
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else if (player.requestFullscreen) await player.requestFullscreen();
-      else setFakeFullscreen(true);
-    } catch {
-      setFakeFullscreen(true);
-    }
-  }, [fakeFullscreen]);
 
   function tryNextServer() {
     const index = STREAMING_SERVERS.findIndex((item) => item.id === server);
