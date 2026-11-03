@@ -172,16 +172,14 @@ describe("Flux storage account boundaries", () => {
       user,
       { operation: "upload", key: "a.txt", size: 1, contentType: "text/plain" },
       env,
-      vi
-        .fn()
-        .mockResolvedValue(
-          response({
-            key: `birchos/${user}/a.txt`,
-            url: "https://s3.example/signed",
-            contentType: "text/plain",
-            expiresInSeconds: 600,
-          }),
-        ),
+      vi.fn().mockResolvedValue(
+        response({
+          key: `birchos/${user}/a.txt`,
+          url: "https://s3.example/signed",
+          contentType: "text/plain",
+          expiresInSeconds: 600,
+        }),
+      ),
     );
     expect(result).toMatchObject({ ok: true, operation: "upload", key: "a.txt" });
   });
