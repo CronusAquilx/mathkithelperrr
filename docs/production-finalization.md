@@ -1,0 +1,30 @@
+# Birch OS finalization
+
+All existing apps, account creation/sign-in, Cloud data, layouts, personalization, wallpaper catalog and routes are retained. Storage remains integrated into the shared Windows app and console frame rather than a second shell.
+
+## Storage: external CORS action
+
+Verified with a real Birch session: Flux listing and upload URL requests succeed. Signed S3 OPTIONS requests for **both** the published and preview origins return **403**, with no allowing origin/method/header response. Browser PUT is blocked before confirmation. This is not a missing Birch secret: both Flux secret names are configured. No connected AWS role or connector is available in this workspace, and the Flux API contract does not expose bucket CORS administration.
+
+In AWS Console:
+1. Open **Amazon S3 → Buckets** and select the existing bucket bound to Flux's Birch integration (not Birch's Cloud wallpaper storage). Use the bucket already configured in Flux; do not create another bucket.
+2. Open **Permissions → Cross-origin resource sharing (CORS) → Edit**.
+3. Preserve any existing rules needed by Flux or other apps. Add the rule from [`storage-cors.json`](./storage-cors.json) to the existing JSON array, or paste the entire array if there are no rules.
+4. Save only this CORS change. Leave **Block Public Access**, bucket policy, ACLs, IAM permissions/trust and credentials unchanged. Do not add OPTIONS to AllowedMethods; S3 answers preflight automatically.
+5. Retry a tiny text-file upload in Birch, then verify confirmation, listing, download byte match and sharing. These flows are **not yet verified end-to-end**.
+
+Exact allowed production origin: `https://mathkithelperrr.lovable.app`.
+Exact allowed editor preview origin: `https://id-preview--65f9d704-e521-4207-b878-dc53b4f8ad7e.lovable.app`.
+Local sandbox tests additionally need `http://localhost:8080` in AllowedOrigins if local browser upload verification is desired; do not add wildcard origins. If the editor actually uses another origin after an environment change, allow its exact origin only after inspecting it.
+
+CORS grants browser access to already signed requests, not public bucket access. PUT sends only exact Content-Type and file bytes, never the Flux token. GET/HEAD support browser file inspection/download; ETag and Content-Disposition are safe exposed response headers. Signed URLs expire in 600 seconds.
+
+## Environment and setup
+
+Project Settings → Secrets must hold `FLUX_API_BASE` (Flux HTTPS origin) and `FLUX_INTEGRATION_TOKEN`, and existing `GOOGLE_API_KEY` for music. Never put their values in browser variables or committed environment files. Cloud-managed connection variables and bearer middleware remain untouched. Deploy after server secret changes to apply them to the public site.
+
+## Verification boundaries
+
+Full tests and lint are run locally. The platform performs typecheck/build automatically; this environment forbids launching duplicate manual typechecks or builds. `build OK` is the available build signal, not a separate claimed `tsc` run. Deployment status must be verified through the publishing tool and public-site fetch, not inferred from local tests.
+
+Existing broad lint debt (formatting and explicit-any legacy code) remains visible; it is not suppressed or treated as a build failure. Movie test mocks and actual hook-order issues have been repaired. External media providers, subscriptions, controller/GPU performance and complete playback cannot be guaranteed by route rendering tests. Network proxy DNS screening rejects non-global addresses, but independent runtime DNS resolution means DNS rebinding protection is defense-in-depth rather than IP-pinned transport.
