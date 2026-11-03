@@ -12,12 +12,6 @@ const DROP_RES = new Set(["content-encoding", "content-length", "transfer-encodi
 const RETRY_CSS = "(function(){function f(){document.querySelectorAll('link[rel=stylesheet]').forEach(function(l){if(!l.sheet&&!l.dataset.r){l.dataset.r='1';var n=l.cloneNode();n.dataset.r='1';l.after(n);}});}addEventListener('load',function(){f();setTimeout(f,3000);setTimeout(f,8000);});})();";
 const tokenCache = new Map<string, number>();
 
-function blockedHost(host: string) {
-  const h = host.toLowerCase();
-  return h === "localhost" || h.endsWith(".localhost") || h.endsWith(".internal") || h === "0.0.0.0" || h === "[::1]" ||
-    /^(127|10|0)\./.test(h) || /^192\.168\./.test(h) || /^169\.254\./.test(h) || /^172\.(1[6-9]|2\d|3[01])\./.test(h);
-}
-
 async function authorized(request: Request) {
   const token = request.headers.get("authorization") ?? "";
   const exp = tokenCache.get(token);
@@ -49,7 +43,8 @@ async function handle(request: Request) {
   const method = (meta.method || "GET").toUpperCase();
   let url: URL;
   try { url = new URL(target ?? ""); } catch { return new Response("Bad url", { status: 400 }); }
-  if (!/^https?:$/.test(url.protocol) || blockedHost(url.hostname)) return new Response("Blocked url", { status: 400 });
+  const { publicTarget } = await import("@/lib/astra/public-target.server");
+  if (!(await publicTarget(url))) return new Response("Blocked url", { status: 400 });
 
   const raw: [string, string][] = Array.isArray(meta.headers) ? meta.headers : [];
   const headers = new Headers({ "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36", "accept-language": "en-US,en;q=0.9" });
@@ -66,6 +61,11 @@ async function handle(request: Request) {
     upstream = await fetch(url.toString(), { method, headers, body, redirect: "manual" });
   } catch {
     return new Response("Could not reach this website. Please retry.", { status: 502 });
+  }
+  const location = upstream.headers.get("location");
+  if (upstream.status >= 300 && upstream.status < 400 && location) {
+    try { if (!(await publicTarget(new URL(location, url)))) return new Response("Blocked redirect", { status: 400 }); }
+    catch { return new Response("Invalid redirect", { status: 400 }); }
   }
 
   const out: [string, string][] = [];

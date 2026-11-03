@@ -97,7 +97,7 @@ export function HostParty({ game, wrap, frame }: { game: { file: string; name: s
   }, [host, stream, room?.state?.game?.mode, room?.state?.game?.controller]);
 
   function forward(from: string, i: Input) {
-    const g = (useRoomSnapshot() ?? room)?.state?.game;
+    const g = (getRoom("games") ?? room)?.state?.game;
     if (!canControl(g, from)) return;
     try { frame.current?.contentWindow?.postMessage({ bbInput: 1, ...i }, "*"); } catch { /* frame gone */ }
   }
@@ -135,7 +135,6 @@ export function HostParty({ game, wrap, frame }: { game: { file: string; name: s
 // Latest room for message handlers without re-subscribing.
 import { getRoom } from "@/lib/rooms";
 import { RoomButton } from "@/components/RoomButton";
-const useRoomSnapshot = () => getRoom("games");
 const RoomButtonLazy = () => <RoomButton kind="games" />;
 
 const KC: Record<string, number> = { ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, " ": 32, Enter: 13, Escape: 27, Shift: 16, Control: 17, Tab: 9, Backspace: 8 };
