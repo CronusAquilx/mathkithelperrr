@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { storageInput, relativeKey, type StorageResult, type StorageFile } from "./schema";
 
-type FluxEnv = { base?: string; token?: string };
+type FluxEnv = { base?: string | undefined; token?: string | undefined };
 export function missingFluxNames(env: FluxEnv): string[] {
   return [
     ...(!env.base?.trim() ? ["FLUX_API_BASE"] : []),
@@ -99,12 +99,12 @@ export async function executeStorage(
       const rows = Array.isArray(body)
         ? body
         : obj.success
-          ? (obj.data.objects ?? obj.data.files ?? obj.data.items)
+          ? (obj.data["objects"] ?? obj.data["files"] ?? obj.data["items"])
           : undefined;
       if (!Array.isArray(rows)) throw new Error();
       const files: StorageFile[] = rows.map((row: unknown) => {
         const item = record.parse(row);
-        const source = z.string().parse(item.key ?? item.Key);
+        const source = z.string().parse(item["key"] ?? item["Key"]);
         const ownPrefix = `birchos/${userId}/`;
         const key = relativeKey.parse(
           source.startsWith(ownPrefix) ? source.slice(ownPrefix.length) : source,
@@ -116,33 +116,33 @@ export async function executeStorage(
           size: z
             .number()
             .nonnegative()
-            .parse(item.size ?? item.Size ?? 0),
+            .parse(item["size"] ?? item["Size"] ?? 0),
           lastModified: z
             .string()
             .nullable()
-            .parse(item.lastModified ?? item.LastModified ?? null),
+            .parse(item["lastModified"] ?? item["LastModified"] ?? null),
           contentType: z
             .string()
             .nullable()
-            .parse(item.contentType ?? null),
+            .parse(item["contentType"] ?? null),
         };
       });
       return { ok: true, operation: "list", files };
     }
     const obj = record.parse(body);
     const resultUrl = safeUrl.parse(
-      obj.url ?? (input.operation === "share" ? obj.shareUrl : undefined),
+      obj["url"] ?? (input.operation === "share" ? obj["shareUrl"] : undefined),
     );
     // Never echo arbitrary provider fields, error bodies, configuration or headers.
     if (input.operation === "upload") {
-      if (obj.key !== input.key || obj.contentType !== input.contentType) throw new Error();
+      if (obj["key"] !== input.key || obj["contentType"] !== input.contentType) throw new Error();
       return {
         ok: true,
         operation: "upload",
         url: resultUrl,
         key: input.key,
         contentType: input.contentType,
-        expiresInSeconds: z.number().positive().max(600).parse(obj.expiresInSeconds),
+        expiresInSeconds: z.number().positive().max(600).parse(obj["expiresInSeconds"]),
       };
     }
     return { ok: true, operation: input.operation, url: resultUrl };
