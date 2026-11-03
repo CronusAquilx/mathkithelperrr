@@ -18,14 +18,14 @@ export default defineConfig({
     // Public (publishable) backend settings as a fallback when .env is absent from the build.
     define: {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
-        process.env.VITE_SUPABASE_URL || "https://fwgmgkczglnotreqjevo.supabase.co",
+        process.env["VITE_SUPABASE_URL"] || "https://fwgmgkczglnotreqjevo.supabase.co",
       ),
       "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(
-        process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+        process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
           "sb_publishable_lIEryVuNCKXRaZw5_rtlQg_WdR0ldvU",
       ),
       "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(
-        process.env.VITE_SUPABASE_PROJECT_ID || "fwgmgkczglnotreqjevo",
+        process.env["VITE_SUPABASE_PROJECT_ID"] || "fwgmgkczglnotreqjevo",
       ),
     },
     // Pre-bundle the on-device voice libraries at startup so their lazy import
