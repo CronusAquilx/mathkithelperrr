@@ -168,8 +168,21 @@ describe("Flux storage account boundaries", () => {
     });
   });
   it("normalizes Flux's isolated full upload key without exposing it to the browser", async () => {
-    const result = await executeStorage(user, { operation: "upload", key: "a.txt", size: 1, contentType: "text/plain" }, env,
-      vi.fn().mockResolvedValue(response({ key: `birchos/${user}/a.txt`, url: "https://s3.example/signed", contentType: "text/plain", expiresInSeconds: 600 })));
+    const result = await executeStorage(
+      user,
+      { operation: "upload", key: "a.txt", size: 1, contentType: "text/plain" },
+      env,
+      vi
+        .fn()
+        .mockResolvedValue(
+          response({
+            key: `birchos/${user}/a.txt`,
+            url: "https://s3.example/signed",
+            contentType: "text/plain",
+            expiresInSeconds: 600,
+          }),
+        ),
+    );
     expect(result).toMatchObject({ ok: true, operation: "upload", key: "a.txt" });
   });
   it.each(["download", "share"] as const)(

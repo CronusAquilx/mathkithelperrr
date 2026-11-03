@@ -138,7 +138,11 @@ export async function executeStorage(
     // Never echo arbitrary provider fields, error bodies, configuration or headers.
     if (input.operation === "upload") {
       const returnedKey = obj["key"];
-      if ((returnedKey !== input.key && returnedKey !== `birchos/${userId}/${input.key}`) || obj["contentType"] !== input.contentType) throw new Error();
+      if (
+        (returnedKey !== input.key && returnedKey !== `birchos/${userId}/${input.key}`) ||
+        obj["contentType"] !== input.contentType
+      )
+        throw new Error();
       return {
         ok: true,
         operation: "upload",
@@ -153,7 +157,9 @@ export async function executeStorage(
     return {
       ok: false,
       status: 502,
-      error: received ? `Flux returned an incompatible ${input.operation} response. Please check the integration API contract.` : "Storage could not reach Flux. Check the connection and retry.",
+      error: received
+        ? `Flux returned an incompatible ${input.operation} response. Please check the integration API contract.`
+        : "Storage could not reach Flux. Check the connection and retry.",
     };
   }
 }
