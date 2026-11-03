@@ -105,7 +105,7 @@ export async function generateImagePng(
   if (!res.ok || !res.body) {
     return { ok: false, error: res.ok ? "The image stream was empty" : `Image server answered ${res.status}` };
   }
-  let result = await consumeImageStream(res);
+  const result = await consumeImageStream(res);
   if (result.ok) {
     const bin = atob(result.b64);
     const bytes = new Uint8Array(bin.length);

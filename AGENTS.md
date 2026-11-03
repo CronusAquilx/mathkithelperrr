@@ -56,3 +56,4 @@
 - Restore desktop sessions with a single reducer replacement so identity changes never merge another account's windows or unminimize saved windows.
 - AuthProvider owns the session subscriber and clears protected query caches on sign-out; token refresh updates credentials without remounting the desktop.
 - Movies uses one shared cinematic catalog presentation across every shell so navigation and account watchlists remain consistent.
+- Lint checks semantic errors, allows deliberate empty catch fallbacks and reports legacy any types as warnings; formatting stays separate to avoid unrelated whole-project rewrites.
