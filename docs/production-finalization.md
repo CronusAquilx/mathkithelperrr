@@ -4,6 +4,8 @@ All existing apps, account creation/sign-in, Cloud data, layouts, personalizatio
 
 ## Storage: external CORS action
 
+**Updated status, 2026-11-03:** the CORS action below has already been completed. AWS MCP read-only inspection confirms all three origins (including `https://beatbirch-melody-grove.lovable.app`); all three preflights now return 200. Real public-origin browser PUT, current-preview confirmation/list, share/copy and exact-byte download checks pass after the share-path repair. See the Storage README for the combined-origin test boundary. The deployed Birch server still fails reaching Flux, so deployed configuration/publication remains to verify; do not reapply CORS or change AWS settings. The following original diagnosis is retained as historical context, not an open action.
+
 Verified with a real Birch session: Flux listing and upload URL requests succeed. Signed S3 OPTIONS requests for **both** the published and preview origins return **403**, with no allowing origin/method/header response. Browser PUT is blocked before confirmation. This is not a missing Birch secret: both Flux secret names are configured. No connected AWS role or connector is available in this workspace, and the Flux API contract does not expose bucket CORS administration.
 
 In AWS Console:

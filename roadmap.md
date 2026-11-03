@@ -3,8 +3,9 @@
 ## Flux continuation after CORS update
 - [x] Reuse existing Flux secrets and verify AWS bucket CORS read-only; all three reported origins pass preflight.
 - [x] Verify actual browser PUT 200 from allowed public origin, confirmation and list readback using current preview code.
-- [ ] Repair share response compatibility and verify share/copy/download.
-- [ ] Run Storage tests and inspect automatic build; update docs with exact results and any published-connection blocker.
+- [x] Repair share response compatibility: Flux returns a relative path; resolve safely against configured origin. Real share/copy/page HTTP 200 and download exact-byte checks pass.
+- [x] 33 Storage tests and scoped lint pass; automatic build OK. Docs record combined current-preview server / allowed-public-origin browser PUT verification, not a claimed full deployed flow.
+- [ ] External/deployment: published Birch server fails reaching Flux while current preview succeeds; deployed configuration and publication must be reverified. No secret values or AWS settings changed.
 
 ## Production finalization
 - [x] Audit routes, metadata and boundaries; repair auth startup recovery, movie hook order, movie test mocks and relay address screening without removing features.
@@ -12,13 +13,13 @@
 - [x] Real Flux listing/upload URL succeed; exact public and preview S3 preflights both return 403. Secret values remain server-only. Upload/confirm/download/share tests pass, but completed real transfer is not claimed.
 - [x] Actual signed-in Windows Storage, Settings, Movies, Music, Games, Browser and Store opened with no page errors; PS5 home and mobile Xbox rendered. Mobile Windows Storage/Music/Settings have no horizontal overflow.
 - [x] Document CORS-only external steps and verification limitations in docs/production-finalization.md; request deployment and report the result in chat.
-- [ ] External: Flux bucket owner adds the exact CORS rule in docs/storage-cors.json; then real PUT/confirmation/download/share must be rechecked. No AWS connection is available here.
+- [x] Flux bucket CORS updated externally and confirmed read-only through AWS MCP; all three origins pass preflight. Real combined-origin Storage checks are recorded above.
 
 ## Current request — Fluxlinkk Storage integration
 - [x] Inspect Birch authentication, shared app views, existing schema/RLS and configured secret names.
 - [x] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
 - [x] Add security/flow tests, environment/setup documentation and scoped lint checks; automatic builds pass. Full-project lint reports thousands of existing formatting/rule errors outside this integration.
-- [ ] Complete real upload/download/share verification — verified account list and upload URL work, but direct browser PUT is blocked by storage CORS for the localhost test origin; cannot modify AWS/Flux configuration in this task.
+- [x] Real upload/confirm/list/share/copy/download verified using current preview server and an allowed public-origin browser PUT; full deployed-site connection remains the explicitly listed blocker above.
 
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.
