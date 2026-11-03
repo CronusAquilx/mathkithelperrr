@@ -1,10 +1,13 @@
 # Birchbeat import roadmap
 
 ## Current request — end-to-end reliability
-- [ ] Repair confirmed window restoration, layout switching, session and movie/search failures while preserving existing apps.
-- [ ] Run full tests and lint; verify signed-in persistence and desktop/mobile interactions.
-- [ ] Document setup, environment names, provider limitations and security scan status.
-- [ ] Verify canonical GitHub main access and delivery; do not overwrite another repository.
+- [x] Repair window restoration, console selection navigation, token-refresh handling, movie hook ordering and search error reporting; preserve existing apps.
+- [x] Run all 165 tests (pass), lint (0 errors, 124 warnings), and automatic compilation (OK); signed-in minimized-window refresh/restore and music catalog load verified, phone overflow absent.
+- [ ] Complete all provider playback/auth flows and full PS5/Xbox interaction verification — requires further focused validation and provider accounts/hardware; not claimed complete.
+- [x] Document setup, environment names, provider limitations and security scan status; no destructive database changes.
+- [ ] Deliver to canonical GitHub main — My GitHub API (4) verified as chickneboinki with push/admin access; remote main still 80c8eb1a87a9295854a9a4c3240e918cc36e1581 at final check, so sync delivery is not verified.
+- [ ] Remove managed .env from tracked source — file remains integration-managed/tracked; only publishable configuration detected, no private credential rotation identified. Ignore rules alone cannot untrack it.
+- [ ] Fresh deep security scan — no recent deep scan result available; existing automated findings summarized, not an overall security guarantee.
 
 ## Current request — shared looks and cinema
 - [x] Use the chosen uploaded logo and star favicon.
