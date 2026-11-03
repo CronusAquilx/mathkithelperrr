@@ -5,7 +5,7 @@ import { NowPlayingBar } from "@/components/music/NowPlayingBar";
 import { FocusPrompt, DevicePrompt } from "@/components/FocusPrompt";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, Bot, Brain, Film, Gamepad2, Globe, AudioLines, Home, Lock, LogOut, Maximize, Music, Shield, Menu, MessageSquare, Plus, RotateCw, Search, Settings, Trash2, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Brain, Film, Gamepad2, Globe, AudioLines, Home, Lock, LogOut, Maximize, Music, Shield, Menu, MessageSquare, Plus, RotateCw, Search, Settings, Trash2, Users, HardDrive } from "lucide-react";
 import { getAppearance, usePrefs } from "@/lib/astra/prefs";
 import { DesktopDock, DesktopStatusBar } from "./DesktopSurface";
 import { SwitchShell } from "./SwitchSurface";
@@ -122,6 +122,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 }
 
 const RAIL = [
+  { to: "/storage", label: "Storage", icon: HardDrive, f: "all" },
   { to: "/home", label: "Home", icon: Home, f: "all" },
   { to: "/chat", label: "AI", icon: Bot, f: "ai" },
   { to: "/voice", label: "Voice", icon: AudioLines, f: "ai" },
@@ -231,6 +232,7 @@ function SidebarBody({ onNavigate, onSearch }: { onNavigate: () => void; onSearc
         </button>
       </div>
       <div className="mt-4 space-y-0.5 px-2">
+        <Link to="/storage" onClick={onNavigate} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent" }}><HardDrive className="size-4" /> Storage</Link>
         {shows("all") && <Link to="/home" onClick={onNavigate} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent" }}><Home className="size-4" /> Home</Link>}
         {shows("ai") && <Link to="/voice" onClick={onNavigate} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent" }}><AudioLines className="size-4" /> Voice</Link>}
         {shows("web") && <Link to="/web" onClick={onNavigate} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent" }}><Globe className="size-4" /> Web</Link>}
@@ -325,6 +327,7 @@ function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (o: 
 }
 
 const DESKTOP_COMMANDS = [
+  { to: "/storage", label: "Storage", icon: HardDrive },
   { to: "/home", label: "Home", icon: Home },
   { to: "/games", label: "Games", icon: Gamepad2 },
   { to: "/web", label: "Browser", icon: Globe },

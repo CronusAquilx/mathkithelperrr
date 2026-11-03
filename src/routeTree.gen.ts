@@ -22,6 +22,7 @@ import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedMusicRouteImport } from './routes/_authenticated/music'
 import { Route as AuthenticatedPlayRouteImport } from './routes/_authenticated/play'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedStorageRouteImport } from './routes/_authenticated/storage'
 import { Route as AuthenticatedStoreRouteImport } from './routes/_authenticated/store'
 import { Route as AuthenticatedVoiceRouteImport } from './routes/_authenticated/voice'
 import { Route as AuthenticatedWebRouteImport } from './routes/_authenticated/web'
@@ -119,6 +120,11 @@ const AuthenticatedPlayRoute = AuthenticatedPlayRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStorageRoute = AuthenticatedStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStoreRoute = AuthenticatedStoreRouteImport.update({
@@ -322,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/music': typeof AuthenticatedMusicRoute
   '/play': typeof AuthenticatedPlayRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/storage': typeof AuthenticatedStorageRoute
   '/store': typeof AuthenticatedStoreRoute
   '/voice': typeof AuthenticatedVoiceRoute
   '/web': typeof AuthenticatedWebRoute
@@ -370,6 +377,7 @@ export interface FileRoutesByTo {
   '/music': typeof AuthenticatedMusicRoute
   '/play': typeof AuthenticatedPlayRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/storage': typeof AuthenticatedStorageRoute
   '/store': typeof AuthenticatedStoreRoute
   '/voice': typeof AuthenticatedVoiceRoute
   '/web': typeof AuthenticatedWebRoute
@@ -420,6 +428,7 @@ export interface FileRoutesById {
   '/_authenticated/music': typeof AuthenticatedMusicRoute
   '/_authenticated/play': typeof AuthenticatedPlayRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/storage': typeof AuthenticatedStorageRoute
   '/_authenticated/store': typeof AuthenticatedStoreRoute
   '/_authenticated/voice': typeof AuthenticatedVoiceRoute
   '/_authenticated/web': typeof AuthenticatedWebRoute
@@ -470,6 +479,7 @@ export interface FileRouteTypes {
     | '/music'
     | '/play'
     | '/settings'
+    | '/storage'
     | '/store'
     | '/voice'
     | '/web'
@@ -518,6 +528,7 @@ export interface FileRouteTypes {
     | '/music'
     | '/play'
     | '/settings'
+    | '/storage'
     | '/store'
     | '/voice'
     | '/web'
@@ -567,6 +578,7 @@ export interface FileRouteTypes {
     | '/_authenticated/music'
     | '/_authenticated/play'
     | '/_authenticated/settings'
+    | '/_authenticated/storage'
     | '/_authenticated/store'
     | '/_authenticated/voice'
     | '/_authenticated/web'
@@ -715,6 +727,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/storage': {
+      id: '/_authenticated/storage'
+      path: '/storage'
+      fullPath: '/storage'
+      preLoaderRoute: typeof AuthenticatedStorageRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/store': {
@@ -967,6 +986,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMusicRoute: typeof AuthenticatedMusicRoute
   AuthenticatedPlayRoute: typeof AuthenticatedPlayRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStorageRoute: typeof AuthenticatedStorageRoute
   AuthenticatedStoreRoute: typeof AuthenticatedStoreRoute
   AuthenticatedVoiceRoute: typeof AuthenticatedVoiceRoute
   AuthenticatedWebRoute: typeof AuthenticatedWebRoute
@@ -999,6 +1019,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMusicRoute: AuthenticatedMusicRoute,
   AuthenticatedPlayRoute: AuthenticatedPlayRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStorageRoute: AuthenticatedStorageRoute,
   AuthenticatedStoreRoute: AuthenticatedStoreRoute,
   AuthenticatedVoiceRoute: AuthenticatedVoiceRoute,
   AuthenticatedWebRoute: AuthenticatedWebRoute,

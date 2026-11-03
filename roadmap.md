@@ -1,5 +1,11 @@
 # Birchbeat import roadmap
 
+## Current request — Fluxlinkk Storage integration
+- [x] Inspect Birch authentication, shared app views, existing schema/RLS and configured secret names.
+- [x] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
+- [x] Add security/flow tests, environment/setup documentation and scoped lint checks; automatic builds pass. Full-project lint reports thousands of existing formatting/rule errors outside this integration.
+- [ ] Complete real upload/download/share verification — verified account list and upload URL work, but direct browser PUT is blocked by storage CORS for the localhost test origin; cannot modify AWS/Flux configuration in this task.
+
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.
 - [x] Add game/movie Windows desktop shortcuts and removal with stable title IDs and existing launch paths.
