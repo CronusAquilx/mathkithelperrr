@@ -8,7 +8,7 @@ type Field = { key: string; path: string; label: string; value: number; b64: boo
 
 const decode = (raw: string) => {
   if (raw.length > 16 && /^[A-Za-z0-9+/=\s]+$/.test(raw)) {
-    try { const d = atob(raw.replace(/\s/g, "")); if (/^[\x09\x0a\x0d\x20-\x7e]+$/.test(d)) return { text: d, b64: true }; } catch { /* not base64 */ }
+    try { const d = atob(raw.replace(/\s/g, "")); if (/^[\t\n\r\x20-\x7e]+$/.test(d)) return { text: d, b64: true }; } catch { /* not base64 */ }
   }
   return { text: raw, b64: false };
 };

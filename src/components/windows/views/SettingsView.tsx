@@ -120,7 +120,7 @@ export function SettingsView() {
             <Card title="Console mode">
               <Choice
                 value={p.console}
-                onChange={(c) => set({ console: c })}
+                onChange={(c) => { set({ console: c }); void navigate({ to: c === "off" ? (p.layout === "windows" ? "/desktop" : "/home") : "/console" }); }}
                 options={[
                   { v: "off", label: "Off", sub: "Keep your existing app layout" },
                   { v: "sony", label: "PlayStation / PS5", sub: "Games and media dashboard" },

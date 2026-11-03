@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { activatePreferenceAccount, flushPreferences } from "@/lib/astra/prefs";
+import type { QueryClient } from "@tanstack/react-query";
 
 type AuthState = { session: Session | null; user: User | null; loading: boolean; guest: boolean };
 type AuthCtx = AuthState & { enterGuest: () => void; exitGuest: () => void };
@@ -16,7 +17,7 @@ function writeGuest(on: boolean) {
 }
 
 /** Guest mode shows the same signed-in layouts with no session: nothing can be saved because the database only accepts signed-in users. */
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children, queryClient }: { children: ReactNode; queryClient: QueryClient }) {
   const [state, setState] = useState<AuthState>({ session: null, user: null, loading: true, guest: false });
   useEffect(() => {
     let transition = 0; let live = true;
@@ -29,12 +30,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (live && current === transition) setState({ session, user: session?.user ?? null, loading: false, guest: !session && readGuest() });
       }).catch(() => {}); }, 0);
     };
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => apply(session));
-    supabase.auth.getSession().then(({ data }) => apply(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED") { setState(s => ({ ...s, session, user: session?.user ?? null })); return; }
+      if (event !== "INITIAL_SESSION" && event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (event === "SIGNED_OUT") { void queryClient.cancelQueries(); queryClient.clear(); }
+      apply(session);
+    });
+    supabase.auth.getSession().then(({ data }) => apply(data.session)).catch(() => apply(null));
     const onExit = () => setState(s => ({ ...s, guest: false }));
     window.addEventListener(GUEST_KEY, onExit);
     return () => { live = false; sub.subscription.unsubscribe(); window.removeEventListener(GUEST_KEY, onExit); };
-  }, []);
+  }, [queryClient]);
   const enterGuest = () => { writeGuest(true); setState(s => ({ ...s, session: null, user: null, guest: true })); };
   const exitGuest = () => { writeGuest(false); setState(s => ({ ...s, guest: false })); };
   return <AuthContext.Provider value={{ ...state, enterGuest, exitGuest }}>{children}</AuthContext.Provider>;

@@ -51,9 +51,9 @@ export function ReferenceScreen({ screen, skin }: { screen: ConsoleScreenName; s
   const focus = (n: number) => { setSelected(n); refs.current[n]?.focus({ preventScroll: true }); refs.current[n]?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: p.reduceMotion ? "auto" : "smooth" }); };
   useConsoleInput(action => {
     if (details) { if (action === "back") setDetails(null); return; }
-    if (action === "menu") { xbox ? setGuide(true) : go("/console/apps"); return; }
+    if (action === "menu") { if (xbox) setGuide(true); else go("/console/apps"); return; }
     if (action === "back") { go("/console"); return; }
-    if (action === "options") { current ? setDetails(current) : go("/console/settings"); return; }
+    if (action === "options") { if (current) setDetails(current); else go("/console/settings"); return; }
     if (action === "select") { refs.current[selected]?.click(); return; }
     if (action === "prev" || action === "next") { if (wii) { setPage(v => Math.max(0, Math.min(Math.ceil(items.length / 12) - 1, v + (action === "next" ? 1 : -1)))); setSelected(0); } else go(home ? "/console/media" : "/console"); return; }
     focus(moveGrid(selected, paged.length + offset, home && !wii ? paged.length + offset : cols, action));

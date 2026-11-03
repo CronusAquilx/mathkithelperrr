@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight, Download, Expand, Maximize2, Minimize2, RefreshCw, Settings2 } from "lucide-react";
 import { DOWNLOAD_PROVIDERS, SERVER_CATEGORIES, STREAMING_SERVERS, type ServerCategory } from "@/lib/movies/tmdb";
 import { useMovieDetail, useTVDetail } from "@/lib/movies/hooks";
@@ -236,7 +236,7 @@ function Watch() {
   const directUrl = `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}autoplay=1${caption !== "off" ? `&sub_lang=${caption}` : ""}${startAt ? `&startAt=${startAt}&progress=${startAt}&t=${startAt}&start=${startAt}` : ""}`;
   const embedUrl = usingAnikoto ? baseUrl : directUrl;
 
-  const toggleFullscreen = useCallback(async () => {
+  const toggleFullscreen = async () => {
     const player = playerRef.current;
     if (!player) return;
     if (fakeFullscreen) {
@@ -250,7 +250,7 @@ function Watch() {
     } catch {
       setFakeFullscreen(true);
     }
-  }, [fakeFullscreen]);
+  };
 
   function tryNextServer() {
     const index = STREAMING_SERVERS.findIndex((item) => item.id === server);

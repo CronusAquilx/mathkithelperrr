@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppearance, setPrefs, usePrefs } from "@/lib/astra/prefs";
-import { desktopReducer, makeWindow, type DesktopApp, type DesktopWindow, type WindowTab } from "@/lib/windows/window-model";
+import { desktopReducer, makeWindow, type DesktopApp, type DesktopWindow, type WindowTab, type DesktopState } from "@/lib/windows/window-model";
 import { NowPlayingBar } from "@/components/music/NowPlayingBar";
 import { RoomFollower } from "@/components/RoomFollower";
 import { cn } from "@/lib/utils";
@@ -54,20 +54,20 @@ export function WindowsDesktop({ children, desktopOnly = false }: { children?: R
   const { user } = useAuth(); const navigate = useNavigate();
   const path = useRouterState({ select: s => s.location.pathname });
   const [state, dispatch] = useReducer(desktopReducer, { windows: [], active: null });
-  const [restored, setRestored] = useState(false);
+  const [restored, setRestored] = useState<string | null>(null);
   const restoredKey = useRef<string | null>(null);
   const sessionKey = `birch-windows-session:${user?.id ?? "guest"}`;
   useEffect(() => {
     if (restoredKey.current === sessionKey) return;
     restoredKey.current = sessionKey;
     try {
-      const saved = JSON.parse(sessionStorage.getItem(sessionKey) || "null") as { windows?: DesktopWindow[]; active?: string } | null;
-      saved?.windows?.filter(w => w.tabs.every(t => t.app !== "route")).forEach(w => dispatch({ type: "open", window: w }));
-      if (saved?.active) dispatch({ type: "focus", id: saved.active });
-    } catch { /* invalid tab state */ }
-    setRestored(true);
+      const saved = JSON.parse(sessionStorage.getItem(sessionKey) || "null") as DesktopState | null;
+      dispatch({ type: "restore-session", state: saved && Array.isArray(saved.windows) ? saved : { windows: [], active: null } });
+    } catch { dispatch({ type: "restore-session", state: { windows: [], active: null } }); }
+    routeId.current = null;
+    setRestored(sessionKey);
   }, [sessionKey]);
-  useEffect(() => { if (restored) sessionStorage.setItem(sessionKey, JSON.stringify(state)); }, [state, restored, sessionKey]);
+  useEffect(() => { if (restored === sessionKey) { try { sessionStorage.setItem(sessionKey, JSON.stringify(state)); } catch { /* unavailable device storage */ } } }, [state, restored, sessionKey]);
   const [start, setStart] = useState(false); const [tasks, setTasks] = useState(false); const [quick, setQuick] = useState(false);
   const [query, setQuery] = useState(""); const [addTab, setAddTab] = useState<string | null>(null);
   const [closing, setClosing] = useState<string[]>([]);
@@ -94,14 +94,14 @@ export function WindowsDesktop({ children, desktopOnly = false }: { children?: R
     dispatch({ type: "open", window: makeWindow(uid(), tab, state.windows.length) });
   };
   useEffect(() => {
-    if (desktopOnly || path === "/desktop" || path === "/home") return;
+    if (restored !== sessionKey || desktopOnly || path === "/desktop" || path === "/home") return;
     const title = path.startsWith("/movies") ? "Movies & TV" : path.startsWith("/chat") ? "BirchBlock AI" : path.split("/")[1] ?? "App";
     if (routeId.current) dispatch({ type: "patch", id: routeId.current, patch: { tabs: [{ id: "route-tab", app: "route", title }], activeTab: "route-tab", minimized: false } });
     else {
       const id = uid(); routeId.current = id;
       dispatch({ type: "open", window: makeWindow(id, { id: "route-tab", app: "route", title }) });
     }
-  }, [path, desktopOnly]);
+  }, [path, desktopOnly, restored, sessionKey]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") { setStart(false); setTasks(false); setQuick(false); setAddTab(null); }
