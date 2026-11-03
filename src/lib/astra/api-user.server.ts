@@ -1,4 +1,3 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "@/lib/astra/public-backend";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -6,8 +5,8 @@ import type { Database } from "@/integrations/supabase/types";
 export async function authenticateRequest(request: Request): Promise<string | null> {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
-  const url = process.env["SUPABASE_URL"] || PUBLIC_SUPABASE_URL;
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || PUBLIC_SUPABASE_KEY;
+  const url = process.env["SUPABASE_URL"]!;
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   const supabase = createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {

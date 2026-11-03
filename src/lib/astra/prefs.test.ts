@@ -1,8 +1,7 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setPrefs, setAppearance, resetPrefs } from "./prefs";
 
 describe("persisted appearance switching", () => {
-  beforeEach(() => { resetPrefs(); setPrefs({ syncLayouts: false }); });
   it("retains music-bar visibility across layout changes", () => {
     resetPrefs(); setPrefs({ musicBarHidden: true }); setPrefs({ console: "sony" });
     expect(JSON.parse(localStorage.getItem("astra-prefs") || "{}").musicBarHidden).toBe(true);
@@ -10,7 +9,7 @@ describe("persisted appearance switching", () => {
     expect(JSON.parse(localStorage.getItem("astra-prefs") || "{}").musicBarHidden).toBe(false);
   });
   it("restores Wii and Neutral appearances independently", () => {
-    setPrefs({ console: "wii" });
+    resetPrefs(); setPrefs({ console: "wii" });
     setAppearance("wii", { customAccent: "#12abcd", consoleCustomBg: "https://example.org/wii.jpg", consoleBg: "custom" });
     setPrefs({ console: "neutral" });
     setAppearance("neutral", { customAccent: "#ab1256" });
@@ -22,14 +21,14 @@ describe("persisted appearance switching", () => {
     expect(saved.appearances.neutral.customAccent).toBe("#ab1256");
   });
   it("never persists temporary guest wallpaper URLs", () => {
-    setPrefs({ console: "off", layout: "classic" });
+    resetPrefs(); setPrefs({ console: "off", layout: "classic" });
     setAppearance("classic", { customBg: "blob:http://localhost/guest-wallpaper" });
     const saved = JSON.parse(localStorage.getItem("astra-prefs") || "{}");
     expect(saved.appearances.classic.customBg).toBe("");
     expect(document.documentElement.dataset["custombg"]).toBe("on");
   });
   it("restores custom accents independently for each layout", () => {
-    setPrefs({ console: "off", layout: "switch" });
+    resetPrefs(); setPrefs({ console: "off", layout: "switch" });
     setAppearance("switch", { customAccent: "#12abcd" });
     setPrefs({ layout: "windows" }); setAppearance("windows", { customAccent: "#ab1256" });
     setPrefs({ layout: "switch" });
@@ -38,7 +37,7 @@ describe("persisted appearance switching", () => {
     expect(document.documentElement.style.getPropertyValue("--star")).toBe("#ab1256");
   });
   it("keeps wallpaper uploads and widget choices separate by layout", () => {
-    setPrefs({ console: "off", layout: "classic" });
+    resetPrefs(); setPrefs({ console: "off", layout: "classic" });
     setAppearance("classic", { customBg: "https://example.org/my-photo.jpg", widgets: { weather: false, notes: true, music: true } });
     setPrefs({ layout: "launcher" });
     expect(document.documentElement.dataset["custombg"]).toBeUndefined();
@@ -48,7 +47,7 @@ describe("persisted appearance switching", () => {
     expect(saved.appearances.classic.widgets.weather).toBe(false);
   });
   it("restores separate console and desktop wallpaper effects", () => {
-    setPrefs({ console: "off", layout: "windows" });
+    resetPrefs(); setPrefs({ console: "off", layout: "windows" });
     setAppearance("windows", { particles: "stars", wallpaperMotion: "zoom", appTransparency: "glass" });
     setPrefs({ console: "sony" }); setAppearance("sony", { particles: "rain", wallpaperMotion: "drift" });
     setPrefs({ console: "series" });
@@ -59,6 +58,7 @@ describe("persisted appearance switching", () => {
     expect(JSON.parse(localStorage.getItem("astra-prefs") || "{}").appearances.sony.particles).toBe("rain");
   });
   it("saves Windows appearance independently of console and classic", () => {
+    resetPrefs();
     setPrefs({ console: "off", layout: "windows" });
     setAppearance("windows", { accent: "aqua", mode: "light" });
     setPrefs({ layout: "classic" });
@@ -70,6 +70,7 @@ describe("persisted appearance switching", () => {
     expect(document.documentElement.classList.contains("dark")).toBe(false);
   });
   it("restores each console accent and theme when switching back", () => {
+    resetPrefs();
     setPrefs({ console: "sony" });
     setAppearance("sony", { accent: "rose", mode: "light", fontScale: 110 });
     setPrefs({ console: "series" });
@@ -85,6 +86,7 @@ describe("persisted appearance switching", () => {
     expect(document.documentElement.style.fontSize).toBe("95%");
   });
   it("editing an inactive layout does not change the current look", () => {
+    resetPrefs();
     setPrefs({ console: "off", layout: "classic" });
     setAppearance("classic", { accent: "gold" });
     setAppearance("launcher", { accent: "sky", sidebarWidth: "wide" });

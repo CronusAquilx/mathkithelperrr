@@ -5,7 +5,7 @@ import { VOICE_SEARCH_WAIT_MS } from '@/lib/movies/voice-search';
 
 const mocks = vi.hoisted(() => ({ tracks: [] as { id: string; label: string; language: string; active: boolean; select: () => void }[] }));
 vi.mock('@/lib/astra/prefs', () => ({ usePrefs: () => ({ transport: 'test', wisp: 'test' }) }));
-vi.mock('@/lib/astra/proxy', () => ({ openProxied: () => Promise.resolve(), keepProxyAlive: () => () => {} }));
+vi.mock('@/lib/astra/proxy', () => ({ openProxied: () => Promise.resolve() }));
 vi.mock('@/lib/astra/proxy-popups', () => ({ attachProxiedPopups: () => () => {} }));
 vi.mock('@/lib/movies/audio-tracks', () => ({ discoverVoiceTracks: () => mocks.tracks, voiceLabel: (_language: string, label: string) => label }));
 afterEach(() => { cleanup(); vi.useRealTimers(); mocks.tracks = []; });

@@ -68,10 +68,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "BIRCH OS — a desktop environment in your browser" },
-      { name: "description", content: "BIRCH OS is a browser-based desktop environment and interface-design project: a full desktop shell with window and app management, system settings, and deep personalization, built with interactive web technologies." },
-      { property: "og:title", content: "BIRCH OS — a desktop environment in your browser" },
-      { property: "og:description", content: "A browser-based desktop environment with window and app management, system settings, and deep personalization, built with interactive web technologies." },
+      { title: "BirchBlock — your own AI agent" },
+      { name: "description", content: "BirchBlock is a private AI agent that runs on your own model server." },
+      { property: "og:title", content: "BirchBlock — your own AI agent" },
+      { property: "og:description", content: "A private AI agent that runs on your own model server." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Outfit:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap",
       },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
@@ -111,7 +111,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider queryClient={queryClient}>
+      <AuthProvider>
         <VisitProvider>
           <VisitGate><Outlet /></VisitGate>
         </VisitProvider>

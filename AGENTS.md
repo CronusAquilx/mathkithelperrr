@@ -16,8 +16,8 @@
 - Reference console screens share one skin-scoped presentation for PS5, Xbox, Wii and Neutral, composing real catalog/library actions without fabricated system telemetry.
 
 - Browser proxy transports must live inside `createClientOnlyFn` so Worker module initialization never evaluates browser WASM transport packages.
-- Fresh basic-URL visits run layout/account confirmation then account-owned preset selection; deep URLs and reloads skip visit confirmation but retain the existing auth gate, and standalone gameplay bypasses this flow.
-- Layout selection precedes the shared account picker on fresh basic-URL visits; account-specific device/focus setup is saved in profiles so returning users are not asked again.
+- Opening choices and explicit account confirmation are document-scoped through VisitProvider; persisted preferences or restored auth sessions never mark a new visit complete, and standalone gameplay bypasses this flow.
+- Layout selection precedes the shared account picker on each document; account-specific device/focus setup is saved in profiles so returning users are not asked again.
 - Username accounts use normalized internal Auth email identities and optional contact email, with server-only identity resolution and rate-limited password verification; usernames never grant roles.
 - Guest mode is a session-tab flag in AuthProvider that lets the signed-in layouts render with no Auth session; nothing saves because database policies only accept signed-in users, so never give guests an anonymous Auth user.
 - Developer sign-in is hidden: no visible entry; the account screen opens a PIN pad via a keyboard shortcut or an invisible corner button, and the PIN is checked only on the server.
@@ -34,7 +34,7 @@
 - Provider game-only entry overrides live in the shared cloud relay resolver, retaining original catalog URLs and installed IDs so launch repairs do not discard libraries.
 - Retrora's frontend location defaults are repaired before Scramjet rewriting in the shared transport adapter; preserve its virtual origin for terrain, account redirects and online sockets without buffering engine or range downloads.
 - Social features use a single authenticated hub across console shells and media frames; all social mutations go through an auth-scoped database function so party membership, blocks and ownership cannot be bypassed by clients.
-- Shared personalization syncs appearance through account-owned preferences and named preset snapshots; disabling sync allows independent looks, widget geometry remains layout-specific, and gameplay's temporary styling stays isolated.
+- Layout appearance profiles live in the existing preferences store with shared settings and CSS tokens; switching shells restores that layout's profile without overwriting another layout or gameplay's temporary styling.
 - Windows desktop uses a shared client-side window model and reusable app views, never nested authenticated shells; cloud games keep their standalone launch for isolation and proxy compatibility.
 - Windows consolidates legacy desktop choices via prefs-load migration, preserving wallpapers; legacy profiles stay archived. DesktopSurface/AppIcon and StoreView reuse existing apps.
 - App-specific navigation lives in shared views with skin-scoped native-app styling; wallpaper effects mount once per desktop/console shell and obey motion/performance preferences to preserve playback and gameplay isolation.
@@ -52,8 +52,3 @@
 - Account preferences use owner-only user_preferences JSON storage and account-keyed device caches; identity switches load defaults or that owner's data, and guests remain memory-only.
 - Windows title shortcuts store stable catalog identifiers in shared account preferences; arcade launches reuse GamesView, movie launches use router navigation, and cloud shortcuts retain standalone playback.
 - First-account personalization edits a local draft and composes the same preview and controls as Settings; save the confirmed appearance before marking account setup complete.
-- Windows tab/window state restores from account-keyed session storage on refresh; route-backed windows reconstruct from the current URL to prevent stale detail screens.
-- Restore desktop sessions with a single reducer replacement so identity changes never merge another account's windows or unminimize saved windows.
-- AuthProvider owns the session subscriber and clears protected query caches on sign-out; token refresh updates credentials without remounting the desktop.
-- Movies uses one shared cinematic catalog presentation across every shell so navigation and account watchlists remain consistent.
-- Lint checks semantic errors, allows deliberate empty catch fallbacks and reports legacy any types as warnings; formatting stays separate to avoid unrelated whole-project rewrites.

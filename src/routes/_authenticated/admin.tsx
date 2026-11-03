@@ -8,7 +8,7 @@ import { MobileMenuButton } from "@/components/astra/AppShell";
 import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Dev dashboard \u2014 BIRCH OS" }, { name: "description", content: "Manage BIRCH OS model providers, tools and usage for developer accounts." }, { property: "og:title", content: "Dev dashboard \u2014 BIRCH OS" }, { property: "og:description", content: "Manage BIRCH OS model providers, tools and usage for developer accounts." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Dev dashboard \u2014 BirchBlock" }, { name: "description", content: "Manage BirchBlock model providers, tools and usage for developer accounts." }, { property: "og:title", content: "Dev dashboard \u2014 BirchBlock" }, { property: "og:description", content: "Manage BirchBlock model providers, tools and usage for developer accounts." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Admin,
 });
 

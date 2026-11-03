@@ -10,7 +10,7 @@ export type AppearanceProfile = Pick<Prefs, "palette" | "accent" | "fontScale" |
   artwork: boolean;
   sidebarWidth: "narrow" | "standard" | "wide";
   wallpaperMotion: "off" | "drift" | "zoom";
-  particles: "off" | "stars" | "shooting-stars" | "rain" | "raindrops" | "snow" | "fireflies";
+  particles: "off" | "stars" | "rain" | "snow" | "fireflies";
   particleDensity: "subtle" | "rich";
   appTransparency: "solid" | "glass" | "liquid";
   glassOpacity?: number;
@@ -27,7 +27,7 @@ export type AppearanceProfile = Pick<Prefs, "palette" | "accent" | "fontScale" |
   liveWallpaper: "off" | "rain" | "water";
   customAccent: string;
   widgets: { weather: boolean; notes: boolean; music: boolean };
-  desktopWidgets?: DesktopWidget[] | undefined;
+  desktopWidgets?: DesktopWidget[];
   wallpaperType?: "image" | "video";
   wallpaperPoster?: string;
   wallpaperPlayback?: boolean;

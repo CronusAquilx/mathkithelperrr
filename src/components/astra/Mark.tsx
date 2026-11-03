@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import logo from "@/assets/birch-os-logo.png.asset.json";
 
 /** BirchBlock's mark: a four-point star. */
 export function AstraMark({ className, pulsing }: { className?: string; pulsing?: boolean }) {
@@ -12,6 +11,9 @@ export function AstraMark({ className, pulsing }: { className?: string; pulsing?
 
 export function AstraWordmark({ className }: { className?: string }) {
   return (
-    <img src={logo.url} alt="BIRCH OS" className={cn("h-16 w-24 rounded object-cover", className)} />
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      <AstraMark className="size-4" />
+      <span className="font-display text-xl leading-none">BirchBlock</span>
+    </span>
   );
 }

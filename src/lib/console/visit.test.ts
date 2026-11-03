@@ -2,11 +2,6 @@ import { describe, expect, it } from "vitest";
 import { initialVisitStage, nextVisitStage, visitDestination } from "./visit";
 
 describe("Every-visit opening rules", () => {
-  it("preserves deep pages and refresh without repeating account selection", () => {
-    expect(initialVisitStage("/movies/title/movie/10", "reload")).toBe("ready");
-    expect(initialVisitStage("/desktop", "reload")).toBe("ready");
-    expect(initialVisitStage("/", "navigate")).toBe("setup");
-  });
   it("opens Switch on its own home after confirmation", () => {
     expect(visitDestination({console:"off",focus:"games",layout:"switch"})).toBe("/home");
   });

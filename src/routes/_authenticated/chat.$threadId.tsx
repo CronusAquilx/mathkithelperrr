@@ -12,7 +12,7 @@ import { MobileMenuButton } from "@/components/astra/AppShell";
 import { AstraMark } from "@/components/astra/Mark";
 
 export const Route = createFileRoute("/_authenticated/chat/$threadId")({
-  head: () => ({ meta: [{ title: "Chat \u2014 BIRCH OS" }, { name: "description", content: "Continue your private conversation with BIRCH OS." }, { property: "og:title", content: "Chat \u2014 BIRCH OS" }, { property: "og:description", content: "Continue your private conversation with BIRCH OS." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Chat \u2014 BirchBlock" }, { name: "description", content: "Continue your private conversation with BirchBlock." }, { property: "og:title", content: "Chat \u2014 BirchBlock" }, { property: "og:description", content: "Continue your private conversation with BirchBlock." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: ThreadPage,
 });
 

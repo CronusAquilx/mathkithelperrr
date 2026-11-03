@@ -8,7 +8,7 @@ import { getProvider } from "@/lib/movies/providers";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/movies/provider/$slug")({
-  head: () => ({ meta: [{ title: "Channel \u2014 BIRCH OS Movies" }, { name: "description", content: "Browse movies and shows by channel in BIRCH OS Movies." }, { property: "og:title", content: "Channel \u2014 BIRCH OS Movies" }, { property: "og:description", content: "Browse movies and shows by channel in BIRCH OS Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Channel \u2014 BirchBlock Movies" }, { name: "description", content: "Browse movies and shows by channel in BirchBlock Movies." }, { property: "og:title", content: "Channel \u2014 BirchBlock Movies" }, { property: "og:description", content: "Browse movies and shows by channel in BirchBlock Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: ProviderPage,
 });
 

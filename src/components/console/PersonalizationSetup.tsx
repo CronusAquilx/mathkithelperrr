@@ -19,7 +19,7 @@ export function PersonalizationSetup({ onConfirm, onBack, busy }: { onConfirm: (
     <div className="flex flex-wrap gap-2 border-b py-4">{Object.keys(ACCENTS).map(id => <Button key={id} size="icon" variant="ghost" className="appearance-swatch size-8 rounded-full border" data-swatch={id} aria-label={`${id} accent`} aria-pressed={look.accent === id} onClick={() => set({ accent: id as AppearanceProfile["accent"] })}>{look.accent === id && <Check className="size-3"/>}</Button>)}</div>
     {select("Background pattern", look.background, ["plain", "dots", "grid", "glow"], v => set({ background: v as AppearanceProfile["background"] }))}
     {select("App surfaces", look.appTransparency, ["solid", "glass", "liquid"], v => set({ appTransparency: v as AppearanceProfile["appTransparency"] }))}
-    {select("Particles", look.particles, ["off", "stars", "shooting-stars", "raindrops", "rain", "snow", "fireflies"], v => set({ particles: v as AppearanceProfile["particles"] }))}
+    {select("Particles", look.particles, ["off", "stars", "rain", "snow", "fireflies"], v => set({ particles: v as AppearanceProfile["particles"] }))}
     <label className="personalization-control"><span>Show clock</span><Switch aria-label="Show clock" checked={look.showClock} onCheckedChange={showClock => set({ showClock })}/></label>
     {select("Clock font", look.clockFont, ["clean", "rounded", "serif", "digital"], v => set({ clockFont: v as AppearanceProfile["clockFont"] }))}
     <PersonalizationControls look={look} onChange={set}/>

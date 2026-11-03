@@ -8,7 +8,7 @@ import { backdrop, DOWNLOAD_PROVIDERS, img } from "@/lib/movies/tmdb";
 import { useWatchlist } from "@/lib/movies/watchlist";
 
 export const Route = createFileRoute("/_authenticated/movies/title/$type/$id")({
-  head: () => ({ meta: [{ title: "Details \u2014 BIRCH OS Movies" }, { name: "description", content: "Explore movie and show details, cast and recommendations in BIRCH OS Movies." }, { property: "og:title", content: "Details \u2014 BIRCH OS Movies" }, { property: "og:description", content: "Explore movie and show details, cast and recommendations in BIRCH OS Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Details \u2014 BirchBlock Movies" }, { name: "description", content: "Explore movie and show details, cast and recommendations in BirchBlock Movies." }, { property: "og:title", content: "Details \u2014 BirchBlock Movies" }, { property: "og:description", content: "Explore movie and show details, cast and recommendations in BirchBlock Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Detail,
 });
 

@@ -4,7 +4,7 @@ import { GamePlayView } from "@/components/games/GamePlayView";
 export const Route = createFileRoute("/_authenticated/play")({
   ssr: false,
   validateSearch: (s: Record<string, unknown>) => ({ url: typeof s["url"] === "string" ? s["url"] : "", name: typeof s["name"] === "string" ? s["name"] : "" }),
-  head: () => ({ meta: [{ title: "Playing — BIRCH OS" }, { name: "description", content: "Play a browser game in its own tab through BIRCH OS." }, { property: "og:title", content: "Playing — BIRCH OS" }, { property: "og:description", content: "Play a browser game in its own tab through BIRCH OS." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Playing — BirchBlock" }, { name: "description", content: "Play a browser game in its own tab through BirchBlock." }, { property: "og:title", content: "Playing — BirchBlock" }, { property: "og:description", content: "Play a browser game in its own tab through BirchBlock." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: Play,
 });
 

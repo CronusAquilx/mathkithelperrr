@@ -3,19 +3,6 @@ import { desktopReducer, makeWindow, type DesktopState } from "./window-model";
 const first = makeWindow("one", { id: "a", app: "music", title: "Music" });
 const initial: DesktopState = { windows: [first], active: "one" };
 describe("desktop windows", () => {
-  it("restores a workspace atomically without reopening minimized windows", () => {
-    const hidden = { ...first, minimized: true };
-    const restored = desktopReducer(initial, { type: "restore-session", state: { windows: [hidden], active: "one" } });
-    expect(restored.windows[0]?.minimized).toBe(true);
-    expect(restored.active).toBeNull();
-  });
-  it("replaces the prior account workspace and drops stale route windows", () => {
-    const route = makeWindow("route", { id: "r", app: "route", title: "Old detail" });
-    const next = makeWindow("two", { id: "b", app: "games", title: "Games" });
-    const restored = desktopReducer(initial, { type: "restore-session", state: { windows: [route, next], active: "missing" } });
-    expect(restored.windows.map(w => w.id)).toEqual(["two"]);
-    expect(restored.active).toBe("two");
-  });
   it("opens separate app windows", () => {
     const state = desktopReducer(initial, { type: "open", window: makeWindow("two", { id: "b", app: "games", title: "Games" }) });
     expect(state.windows).toHaveLength(2); expect(state.active).toBe("two"); expect(state.windows[0]?.tabs[0]?.app).toBe("music");

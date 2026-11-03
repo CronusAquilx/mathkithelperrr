@@ -78,10 +78,7 @@ export function SettingsView() {
   const { user } = useAuth();
   const { data: developer } = useDeveloperGameAccess();
   const windows = p.layout === "windows" && p.console === "off";
-  const [tab, updateTab] = useState<TabName>(windows ? "Home" : "Layout");
-  const tabKey = `birch-settings-tab:${user?.id ?? "guest"}`;
-  useEffect(() => { const saved = sessionStorage.getItem(tabKey); if (TABS.some(t => t === saved) && saved !== "Developer") updateTab(saved as TabName); }, [tabKey]);
-  const setTab = (value: TabName) => { updateTab(value); sessionStorage.setItem(tabKey, value); };
+  const [tab, setTab] = useState<TabName>(windows ? "Home" : "Layout");
   const [filter, setFilter] = useState("");
   const set = (x: Partial<Prefs>) => setPrefs(x);
   const navigate = useNavigate();
@@ -120,7 +117,7 @@ export function SettingsView() {
             <Card title="Console mode">
               <Choice
                 value={p.console}
-                onChange={(c) => { set({ console: c }); void navigate({ to: c === "off" ? (p.layout === "windows" ? "/desktop" : "/home") : "/console" }); }}
+                onChange={(c) => set({ console: c })}
                 options={[
                   { v: "off", label: "Off", sub: "Keep your existing app layout" },
                   { v: "sony", label: "PlayStation / PS5", sub: "Games and media dashboard" },

@@ -32,7 +32,7 @@ export default function ContentRow({ title, movies, isLoading, showRank }: Props
   const filtered = movies?.filter((m) => !m.media_type || m.media_type === 'movie' || m.media_type === 'tv');
 
   return (
-    <section className="cinema-shelf mb-9">
+    <section className="mb-9">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 pb-3 sm:px-6">
         <h2 className="min-w-0 truncate font-display text-2xl text-foreground sm:text-3xl">{title}</h2>
         <div className="flex gap-1">

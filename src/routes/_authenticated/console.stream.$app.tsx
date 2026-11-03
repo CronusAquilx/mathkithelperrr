@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/console/stream/$app")({
   head: ({ params }) => {
-    const title = `${streamingApp(params.app)?.title ?? "Streaming"} — BIRCH OS Console`;
+    const title = `${streamingApp(params.app)?.title ?? "Streaming"} — BirchBlock Console`;
     const description = "Open your streaming app from the console media home.";
     return { meta: [{ title }, { name: "description", content: description }, { property: "og:title", content: title }, { property: "og:description", content: description }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] };
   },

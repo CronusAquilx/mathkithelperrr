@@ -46,9 +46,8 @@ const RECENT_KEY = "astra-movie-searches";
 
 export function MoviesView() {
   const prefs = usePrefs();
-  const native = true;
+  const native = prefs.layout === "windows" || prefs.console === "sony" || prefs.console === "series";
   const [category, setCategory] = useState<"home" | "movies" | "shows" | "list">("home");
-  useEffect(() => { const saved = sessionStorage.getItem("birch-cinema-tab"); if (saved === "home" || saved === "movies" || saved === "shows" || saved === "list") setCategory(saved); }, []);
   const [q, setQ] = useState("");
   const [recents, setRecents] = useState<string[]>([]);
   const trending = useTrending();
@@ -96,37 +95,37 @@ export function MoviesView() {
   }, [q]);
 
   return (
-    <div className="movies-application cinema-experience h-full overflow-y-auto">
+    <div className="movies-application h-full overflow-y-auto">
       <WatchModePrompt />
       <header className="movies-app-header sticky top-0 z-20 grid h-16 grid-cols-[auto_minmax(0,1fr)] items-center gap-2 border-b border-border bg-background/90 px-3 backdrop-blur sm:px-6">
         <MobileMenuButton />
-        {native && <><div className="native-app-wordmark"><Film/><span>Birch Cinema</span></div><nav aria-label="Cinema navigation" className="cinema-navigation">{(["home", "movies", "shows", "list"] as const).map(c => <Button key={c} variant="ghost" aria-pressed={category === c} onClick={() => { setCategory(c); sessionStorage.setItem("birch-cinema-tab", c); setQ(""); setGenre(null); }}>{c === "list" ? "My List" : c === "shows" ? "TV Shows" : c === "movies" ? "Movies" : "Home"}</Button>)}</nav></>}
-        <div className="cinema-search relative flex-1 max-w-md">
+        {native && <><div className="native-app-wordmark"><Film/><span>Birch Cinema</span></div><nav aria-label="Cinema navigation" className="cinema-navigation">{(["home", "movies", "shows", "list"] as const).map(c => <Button key={c} variant="ghost" aria-pressed={category === c} onClick={() => { setCategory(c); setQ(""); setGenre(null); }}>{c === "list" ? "My List" : c === "shows" ? "TV Shows" : c === "movies" ? "Movies" : "Home"}</Button>)}</nav></>}
+        <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input aria-label="Search movies and shows" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search movies & shows" className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search movies & shows" className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
         </div>
       </header>
       <div className="flex items-center gap-2 px-4 pt-3 pb-1 sm:px-6">
         <RoomButton kind="movies" />
         <Dialog open={genresOpen} onOpenChange={setGenresOpen}>
           <DialogTrigger asChild>
-            <Button variant="ghost" className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm ${genre ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-accent"}`}>
+            <button className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm ${genre ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-accent"}`}>
               <LayoutGrid className="size-4" /> {genre ? GENRE_LIST.find((g) => g.id === genre)?.name ?? "Genres" : "Genres"}
-            </Button>
+            </button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>Browse by genre</DialogTitle></DialogHeader>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {GENRE_LIST.map((g) => (
-                <Button variant="ghost" key={g.id} onClick={() => { setQ(""); setGenre(g.id); setGenresOpen(false); }}
+                <button key={g.id} onClick={() => { setQ(""); setGenre(g.id); setGenresOpen(false); }}
                   className={`rounded-lg border px-3 py-3 text-left text-sm font-medium transition ${genre === g.id ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-accent"}`}>
                   {g.name}
-                </Button>
+                </button>
               ))}
             </div>
           </DialogContent>
         </Dialog>
-        {genre && <Button variant="ghost" onClick={() => setGenre(null)} className="rounded-full border px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent">Clear</Button>}
+        {genre && <button onClick={() => setGenre(null)} className="rounded-full border px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent">Clear</button>}
       </div>
       {native && category === "list" && !genre && q.trim().length <= 1 ? <section className="p-6"><h1 className="mb-6 text-3xl font-semibold">My List</h1><div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">{watchlist.data?.map(w => <MovieCard key={`${w.media_type}-${w.tmdb_id}`} movie={{ id:w.tmdb_id,title:w.title??"",poster_path:w.poster_path,backdrop_path:null,overview:"",vote_average:0,genre_ids:[],popularity:0,media_type:w.media_type }} compact />)}</div>{!watchlist.data?.length && <p className="text-sm text-muted-foreground">Your list is empty.</p>}</section> : native && category !== "home" && !genre && q.trim().length <= 1 ? <section className="p-6"><h1 className="mb-6 text-3xl font-semibold">{category === "shows" ? "TV Shows" : "Movies"}</h1><ContentRow title="Top rated" movies={category === "shows" ? topTV.data : topMovies.data} isLoading={category === "shows" ? topTV.isLoading : topMovies.isLoading}/>{category === "movies" ? <ContentRow title="In theaters" movies={nowPlaying.data} isLoading={nowPlaying.isLoading}/> : <><ContentRow title="Anime" movies={anime.data} isLoading={anime.isLoading}/><ContentRow title="K-Drama" movies={kdrama.data} isLoading={kdrama.isLoading}/></>}</section> : genre && q.trim().length <= 1 ? (
         <div className="grid grid-cols-3 gap-3 p-4 sm:grid-cols-4 lg:grid-cols-6">
@@ -144,18 +143,18 @@ export function MoviesView() {
             <div className="flex items-center gap-1.5 overflow-x-auto px-4 pt-3 pb-1 sm:px-6">
               <Clock className="size-3.5 shrink-0 text-muted-foreground" />
               {recents.map((term) => (
-                <Button variant="ghost"
+                <button
                   key={term}
                   onClick={() => setQ(term)}
                   className="shrink-0 rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
                 >
                   {term}
-                </Button>
+                </button>
               ))}
             </div>
           )}
           <HeroBanner movies={trending.data} />
-          <div className="cinema-collection relative z-10 space-y-1 pb-10">
+          <div className="relative z-10 -mt-12 space-y-1 pb-10 sm:-mt-16">
             <ChannelsRow />
             {continueWatching.length > 0 && <ContentRow title="Continue watching" movies={continueWatching} />}
             {!!watchlist.data?.length && (

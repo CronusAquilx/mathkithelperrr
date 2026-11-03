@@ -1,4 +1,3 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "@/lib/astra/public-backend";
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, stepCountIs, streamText, type UIMessage } from "ai";
@@ -24,8 +23,8 @@ function json(status: number, body: unknown) {
 }
 
 function userClient(token: string) {
-  const url = (process.env["SUPABASE_URL"] || PUBLIC_SUPABASE_URL);
-  const key = (process.env["SUPABASE_PUBLISHABLE_KEY"] || PUBLIC_SUPABASE_KEY);
+  const url = process.env["SUPABASE_URL"]!;
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   return createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {

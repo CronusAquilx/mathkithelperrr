@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi", "src/routeTree.gen.ts", ".nitro", ".tanstack"] },
+  { ignores: ["dist", ".output", ".vinxi"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -34,11 +34,7 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "no-empty": ["error", { allowEmptyCatch: true }],
     },
   },
   eslintPluginPrettier,
-  // Formatting remains an explicit command; lint checks correctness without a whole-project formatting rewrite.
-  { rules: { "prettier/prettier": "off" } },
 );

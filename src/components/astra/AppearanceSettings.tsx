@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ACCENTS, PALETTES, getAppearance, resetAppearance, setAppearance, setPrefs, usePrefs, usePreferenceSaveStatus, flushPreferences } from "@/lib/astra/prefs";
+import { ACCENTS, PALETTES, getAppearance, resetAppearance, setAppearance, usePrefs, usePreferenceSaveStatus, flushPreferences } from "@/lib/astra/prefs";
 import { activeLayout, VISIBLE_LAYOUTS, LAYOUT_NAMES, type AppearanceLayout, type AppearanceProfile } from "@/lib/astra/appearance";
 import { cn } from "@/lib/utils";
 import landscape from "@/assets/console-landscape.jpg";
@@ -18,7 +18,6 @@ import { WallpaperCatalog } from "./WallpaperCatalog";
 import { AppearancePreview } from "./AppearancePreview";
 import { PersonalizationControls } from "./PersonalizationControls";
 import { toast } from "sonner";
-import { AppearancePresets } from "./AppearancePresets";
 
 function Setting({ label, children }: { label: string; children: ReactNode }) {
   return <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border py-4"><span className="text-sm">{label}</span><div className="max-w-full">{children}</div></div>;
@@ -34,8 +33,6 @@ export function AppearanceSettings() {
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
   return <div className="appearance-settings text-foreground">
-    <Setting label="Sync personalization across layouts"><Switch aria-label="Sync personalization across layouts" checked={p.syncLayouts} onCheckedChange={syncLayouts => setPrefs({ syncLayouts })}/></Setting>
-    <AppearancePresets/>
     <nav aria-label="Customize layout" className="flex flex-wrap gap-2 border-b border-border pb-5">
       {VISIBLE_LAYOUTS.map(id => <Button key={id} variant={layout === id ? "secondary" : "ghost"} aria-pressed={layout === id} onClick={() => { setLayout(id); setImage(""); setError(""); }}>{id === "sony" || id === "series" ? <Gamepad2/> : <LayoutPanelLeft/>}{LAYOUT_NAMES[id]}</Button>)}
     </nav>
@@ -57,7 +54,7 @@ export function AppearanceSettings() {
     <Setting label="Background artwork"><Switch aria-label="Background artwork" checked={look.artwork} onCheckedChange={artwork => set({ artwork })}/></Setting>
     <Setting label="Animated wallpaper"><Select value={look.wallpaperMotion} onValueChange={v => set({ wallpaperMotion: v as AppearanceProfile["wallpaperMotion"] })}><SelectTrigger className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="off">Off</SelectItem><SelectItem value="drift">Slow drift</SelectItem><SelectItem value="zoom">Slow zoom</SelectItem></SelectContent></Select></Setting>
     {!consoleMode && <Setting label="Live wallpaper"><Select value={look.liveWallpaper} onValueChange={v => set({ liveWallpaper: v as AppearanceProfile["liveWallpaper"] })}><SelectTrigger aria-label="Live wallpaper" className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="off">Off</SelectItem><SelectItem value="rain">Rainfall</SelectItem><SelectItem value="water">Lake ripples</SelectItem></SelectContent></Select></Setting>}
-    <Setting label="Effects"><Select value={look.particles} onValueChange={v => set({ particles: v as AppearanceProfile["particles"] })}><SelectTrigger aria-label="Particles" className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="off">Off</SelectItem><SelectItem value="stars">Twinkling stars</SelectItem><SelectItem value="shooting-stars">Shooting stars</SelectItem><SelectItem value="raindrops">Raindrops on glass</SelectItem><SelectItem value="rain">Rainfall</SelectItem><SelectItem value="snow">Snowfall</SelectItem><SelectItem value="fireflies">Fireflies</SelectItem></SelectContent></Select></Setting>
+    <Setting label="Particles"><Select value={look.particles} onValueChange={v => set({ particles: v as AppearanceProfile["particles"] })}><SelectTrigger aria-label="Particles" className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="off">Off</SelectItem><SelectItem value="stars">Starlight</SelectItem><SelectItem value="rain">Light trails</SelectItem><SelectItem value="snow">Snowfall</SelectItem><SelectItem value="fireflies">Fireflies</SelectItem></SelectContent></Select></Setting>
     <Setting label="Particle amount"><Select value={look.particleDensity} onValueChange={v => set({ particleDensity: v as AppearanceProfile["particleDensity"] })}><SelectTrigger className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="subtle">Subtle</SelectItem><SelectItem value="rich">Rich</SelectItem></SelectContent></Select></Setting>
     <Setting label="App surfaces"><Select value={look.appTransparency} onValueChange={v => set({ appTransparency: v as AppearanceProfile["appTransparency"] })}><SelectTrigger aria-label="App surfaces" className="w-44"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="solid">Solid</SelectItem><SelectItem value="glass">Glass</SelectItem><SelectItem value="liquid">Liquid glass</SelectItem></SelectContent></Select></Setting>
     <Setting label="Show clock"><Switch aria-label="Show clock" checked={look.showClock} onCheckedChange={showClock => set({ showClock })}/></Setting>

@@ -16,7 +16,7 @@ async function handle({ request }: { request: Request }) {
     const raw = String(v ?? "");
     let text = raw, b64 = false;
     if (raw.length > 16 && /^[A-Za-z0-9+/=\s]+$/.test(raw)) {
-      try { const d = atob(raw.replace(/\s/g, "")); if (/^[\t\n\r\x20-\x7e]+$/.test(d)) { text = d; b64 = true; } } catch { /* not base64 */ }
+      try { const d = atob(raw.replace(/\s/g, "")); if (/^[\x09\x0a\x0d\x20-\x7e]+$/.test(d)) { text = d; b64 = true; } } catch { /* not base64 */ }
     }
     view[k] = { text, b64 };
   }
@@ -52,7 +52,7 @@ async function handle({ request }: { request: Request }) {
       const cur = work[k] ?? view[k]!.text;
       if (cur.includes(find)) work[k] = cur.split(find).join(rep);
     }
-  } catch { return Response.json({ error: "AI returned an unreadable edit response. No save data was changed; please retry." }, { status: 502 }); }
+  } catch { /* bad JSON */ }
   const changes: Record<string, string> = {};
   for (const [k, t] of Object.entries(work)) {
     if (!view[k]!.b64) { changes[k] = t; continue; }

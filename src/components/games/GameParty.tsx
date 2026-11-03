@@ -97,7 +97,7 @@ export function HostParty({ game, wrap, frame }: { game: { file: string; name: s
   }, [host, stream, room?.state?.game?.mode, room?.state?.game?.controller]);
 
   function forward(from: string, i: Input) {
-    const g = (getRoom("games") ?? room)?.state?.game;
+    const g = (useRoomSnapshot() ?? room)?.state?.game;
     if (!canControl(g, from)) return;
     try { frame.current?.contentWindow?.postMessage({ bbInput: 1, ...i }, "*"); } catch { /* frame gone */ }
   }

@@ -1,21 +1,5 @@
 # Birchbeat import roadmap
 
-## Current request — end-to-end reliability
-- [x] Repair window restoration, console selection navigation, token-refresh handling, movie hook ordering and search error reporting; preserve existing apps.
-- [x] Run all 165 tests (pass), lint (0 errors, 124 warnings), and automatic compilation (OK); signed-in minimized-window refresh/restore and music catalog load verified, phone overflow absent.
-- [ ] Complete all provider playback/auth flows and full PS5/Xbox interaction verification — requires further focused validation and provider accounts/hardware; not claimed complete.
-- [x] Document setup, environment names, provider limitations and security scan status; no destructive database changes.
-- [ ] Deliver to canonical GitHub main — My GitHub API (4) verified as chickneboinki with push/admin access; remote main still 80c8eb1a87a9295854a9a4c3240e918cc36e1581 at final check, so sync delivery is not verified.
-- [ ] Remove managed .env from tracked source — file remains integration-managed/tracked; only publishable configuration detected, no private credential rotation identified. Ignore rules alone cannot untrack it.
-- [ ] Fresh deep security scan — no recent deep scan result available; existing automated findings summarized, not an overall security guarantee.
-
-## Current request — shared looks and cinema
-- [x] Use the chosen uploaded logo and star favicon.
-- [x] Synchronize looks across layouts with an opt-out and account-owned presets in Settings and basic-URL opening.
-- [x] Keep the current page, Windows app windows, Settings category and account on refresh without repeating opening choices.
-- [x] Upgrade shared Movies presentation and add twinkling/shooting stars and glass raindrops.
-- [x] 22 focused tests pass; guest entry/effects/refresh and developer-account preset save/reload verified; shared Cinema renders original 3840px artwork. Full playback and all-layout playtesting remain user-owned.
-
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.
 - [x] Add game/movie Windows desktop shortcuts and removal with stable title IDs and existing launch paths.

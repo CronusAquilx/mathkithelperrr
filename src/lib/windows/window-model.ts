@@ -3,7 +3,6 @@ export type WindowTab = { id: string; app: DesktopApp; title: string; game?: imp
 export type DesktopWindow = { id: string; tabs: WindowTab[]; activeTab: string; x: number; y: number; width: number; height: number; minimized: boolean; mode: "normal" | "maximized" | "left" | "right" };
 export type DesktopState = { windows: DesktopWindow[]; active: string | null };
 export type WindowAction =
-  | { type: "restore-session"; state: DesktopState }
   | { type: "open"; window: DesktopWindow }
   | { type: "focus" | "close" | "minimize"; id: string }
   | { type: "patch"; id: string; patch: Partial<DesktopWindow> }
@@ -15,11 +14,6 @@ export function makeWindow(id: string, tab: WindowTab, index = 0): DesktopWindow
   return { id, tabs: [tab], activeTab: tab.id, x: 60 + index % 5 * 26, y: 38 + index % 5 * 26, width: 900, height: 620, minimized: false, mode: "normal" };
 }
 export function desktopReducer(state: DesktopState, action: WindowAction): DesktopState {
-  if (action.type === "restore-session") {
-    const windows = action.state.windows.filter(w => w.tabs.length > 0 && w.tabs.every(t => t.app !== "route"));
-    const active = windows.find(w => w.id === action.state.active && !w.minimized)?.id ?? windows.filter(w => !w.minimized).at(-1)?.id ?? null;
-    return { windows, active };
-  }
   if (action.type === "open") return { windows: [...state.windows, action.window], active: action.window.id };
   if (action.type === "show-desktop") return { windows: state.windows.map(w => ({ ...w, minimized: true })), active: null };
   const target = state.windows.find(w => w.id === action.id);

@@ -6,7 +6,7 @@ import { usePerson } from "@/lib/movies/hooks";
 import { img } from "@/lib/movies/tmdb";
 
 export const Route = createFileRoute("/_authenticated/movies/person/$id")({
-  head: () => ({ meta: [{ title: "Profile \u2014 BIRCH OS Movies" }, { name: "description", content: "Explore performer biographies and screen credits in BIRCH OS Movies." }, { property: "og:title", content: "Profile \u2014 BIRCH OS Movies" }, { property: "og:description", content: "Explore performer biographies and screen credits in BIRCH OS Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Profile \u2014 BirchBlock Movies" }, { name: "description", content: "Explore performer biographies and screen credits in BirchBlock Movies." }, { property: "og:title", content: "Profile \u2014 BirchBlock Movies" }, { property: "og:description", content: "Explore performer biographies and screen credits in BirchBlock Movies." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: PersonPage,
 });
 

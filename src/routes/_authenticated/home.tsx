@@ -10,10 +10,10 @@ import { SwitchHome } from "@/components/astra/SwitchSurface";
 export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({
     meta: [
-      { title: "Home — BIRCH OS" },
-      { name: "description", content: "Your BIRCH OS launcher: apps, web, music and movies in one place." },
-      { property: "og:title", content: "Home — BIRCH OS" },
-      { property: "og:description", content: "Your BIRCH OS launcher: AI, web, movies and games in one place." },
+      { title: "Home — BirchBlock" },
+      { name: "description", content: "Your BirchBlock launcher: AI, web, movies and games in one place." },
+      { property: "og:title", content: "Home — BirchBlock" },
+      { property: "og:description", content: "Your BirchBlock launcher: AI, web, movies and games in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -29,7 +29,7 @@ function Home() {
   return (
     <div className="reference-home">
       <div className="reference-home-center">
-        <h1 className="reference-home-brand">{p.homeName === "astra" || !p.homeName ? "BIRCH OS" : p.homeName}</h1>
+        <h1 className="reference-home-brand">{p.homeName === "astra" || !p.homeName ? "BirchBlock" : p.homeName}</h1>
         <DesktopClock/>
         <form
           onSubmit={(e) => {

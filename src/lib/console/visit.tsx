@@ -1,10 +1,8 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Prefs } from "@/lib/astra/prefs";
 export type VisitStage = "setup" | "login" | "account-setup" | "ready";
 export type VisitEvent = "choices-complete" | "account-confirmed" | "setup-needed" | "restart";
-export function initialVisitStage(path = "/", navigationType = "navigate"): VisitStage {
-  return path !== "/" && path !== "/index" || navigationType === "reload" ? "ready" : "setup";
-}
+export function initialVisitStage(): VisitStage { return "setup"; }
 export function nextVisitStage(stage: VisitStage, event: VisitEvent): VisitStage {
   if (event === "restart") return "setup";
   if (stage === "setup" && event === "choices-complete") return "login";
@@ -21,11 +19,8 @@ export function visitDestination(p: Pick<Prefs,"console"|"focus"> & Partial<Pick
 }
 const VisitContext = createContext({stage: "setup" as VisitStage, send: (_event: VisitEvent) => {}});
 export function VisitProvider({children}:{children:ReactNode}) {
-  const [stage,setStage]=useState<VisitStage>("setup");
-  useEffect(() => {
-    const entry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-    setStage(initialVisitStage(window.location.pathname, entry?.type));
-  }, []);
+  // Deliberately document-scoped: reload/new tab/new visit always asks again. Never stored with the auth session.
+  const [stage,setStage]=useState<VisitStage>(initialVisitStage);
   return <VisitContext.Provider value={{stage,send:event=>setStage(s=>nextVisitStage(s,event))}}>{children}</VisitContext.Provider>;
 }
 export const useVisit=()=>useContext(VisitContext);

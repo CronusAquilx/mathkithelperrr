@@ -12,18 +12,17 @@ export const webSearch = createServerFn({ method: "POST" })
     const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(data.q)}`, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; AstraBrowser/1.0)" },
     });
-    if (!res.ok) throw new Error(`Web search is unavailable (${res.status}). Try again or select another search engine.`);
+    if (!res.ok) return { results: [] as { title: string; url: string; snippet: string }[] };
     const html = await res.text();
     const results: { title: string; url: string; snippet: string }[] = [];
     const re = /<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<a[^>]+class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(html)) && results.length < 20) {
-      let url = m[1];
-      if (!url) continue;
+      let url = m[1]!;
       const u = /uddg=([^&]+)/.exec(url);
-      if (u?.[1]) url = decodeURIComponent(u[1]);
+      if (u) url = decodeURIComponent(u[1]!);
       if (url.includes("duckduckgo.com/y.js")) continue;
-      results.push({ title: strip(m[2] ?? ""), url, snippet: strip(m[3] ?? "") });
+      results.push({ title: strip(m[2]!), url, snippet: strip(m[3]!) });
     }
     return { results };
   });

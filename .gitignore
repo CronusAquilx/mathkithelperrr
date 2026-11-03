@@ -30,8 +30,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Environment files stay local; only public configuration examples may be committed.
-.env
-.env.*
-!.env.example
