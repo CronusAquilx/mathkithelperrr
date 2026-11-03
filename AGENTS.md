@@ -9,6 +9,8 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
+- Storage uses shared shell-neutral views and authenticated Birch server functions with verified session IDs; Flux transport is server-only and bytes go directly to signed URLs to preserve account isolation without a second storage integration.
+
 - Cloud games default to the standalone /play view to avoid mounting the app shell during gameplay; keep inline playback as an explicit fallback.
 - Use only verified provider-native graphics controls; FivePlay profiles live in the shared game-performance module so other providers never receive invented engine flags.
 - Gameplay's lightweight styling is temporary and must not overwrite the user's saved appearance preferences.
