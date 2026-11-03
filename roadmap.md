@@ -2,9 +2,9 @@
 
 ## Current request — Fluxlinkk Storage integration
 - [x] Inspect Birch authentication, shared app views, existing schema/RLS and configured secret names.
-- [ ] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
-- [ ] Add security/flow tests, environment/setup documentation and scoped lint checks; inspect automatic build results.
-- [ ] Verify configured Flux API and an authenticated upload/list/download/share flow, or report the concrete blocker.
+- [x] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
+- [x] Add security/flow tests, environment/setup documentation and scoped lint checks; automatic builds pass. Full-project lint reports thousands of existing formatting/rule errors outside this integration.
+- [ ] Complete real upload/download/share verification — verified account list and upload URL work, but direct browser PUT is blocked by storage CORS for the localhost test origin; cannot modify AWS/Flux configuration in this task.
 
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.

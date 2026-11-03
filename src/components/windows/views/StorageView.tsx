@@ -34,6 +34,11 @@ function sizeLabel(bytes: number) {
 
 export function StorageView() {
   const { user } = useAuth();
+  return <AccountStorageView key={user?.id ?? "guest"} />;
+}
+
+function AccountStorageView() {
+  const { user } = useAuth();
   const call = useServerFn(storageOperation);
   const cache = useQueryClient();
   const [folder, setFolder] = useState("");
