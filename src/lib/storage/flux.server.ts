@@ -132,8 +132,22 @@ export async function executeStorage(
       return { ok: true, operation: "list", files };
     }
     const obj = record.parse(body);
+    let sharePathUrl: string | undefined;
+    if (input.operation === "share" && typeof obj["path"] === "string") {
+      const path = obj["path"];
+      if (
+        !path.startsWith("/") ||
+        path.startsWith("//") ||
+        path.includes("\\") ||
+        /[\r\n]/.test(path)
+      )
+        throw new Error();
+      const resolved = new URL(path, base);
+      if (resolved.origin !== base.origin) throw new Error();
+      sharePathUrl = resolved.href;
+    }
     const resultUrl = safeUrl.parse(
-      obj["url"] ?? (input.operation === "share" ? obj["shareUrl"] : undefined),
+      obj["url"] ?? (input.operation === "share" ? (obj["shareUrl"] ?? sharePathUrl) : undefined),
     );
     // Never echo arbitrary provider fields, error bodies, configuration or headers.
     if (input.operation === "upload") {

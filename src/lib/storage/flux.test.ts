@@ -7,6 +7,32 @@ const user = "12345678-1234-4234-8234-123456789012";
 const env = { base: "https://flux.example", token: "fixture-only" };
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 describe("Flux storage account boundaries", () => {
+  it("resolves Flux share paths only against the configured origin", async () => {
+    const result = await executeStorage(
+      user,
+      { operation: "share", key: "a.txt" },
+      env,
+      vi
+        .fn()
+        .mockResolvedValue(
+          response({ slug: "test", kind: "file", path: "/s/test", expiresAt: null }),
+        ),
+    );
+    expect(result).toEqual({ ok: true, operation: "share", url: "https://flux.example/s/test" });
+  });
+  it.each(["//evil.example/s/test", "/\\evil.example/s/test", "https://evil.example/s/test"])(
+    "rejects unsafe share path %s",
+    async (path) => {
+      expect(
+        await executeStorage(
+          user,
+          { operation: "share", key: "a.txt" },
+          env,
+          vi.fn().mockResolvedValue(response({ path })),
+        ),
+      ).toMatchObject({ ok: false, status: 502 });
+    },
+  );
   it("rejects unauthenticated access before any provider request", async () => {
     const fetcher = vi.fn();
     expect(await executeStorage(undefined, { operation: "list" }, env, fetcher)).toMatchObject({
