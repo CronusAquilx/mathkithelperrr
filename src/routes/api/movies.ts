@@ -1,3 +1,4 @@
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "@/lib/astra/public-backend";
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
@@ -30,8 +31,8 @@ async function authorizedUser(request: Request, url: URL): Promise<boolean> {
   if (!token) return false;
   // Guests browse the public catalog without an account; nothing is saved for them.
   if (token === "guest") return true;
-  const key = (process.env["SUPABASE_PUBLISHABLE_KEY"] || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
-  const supabase = createClient((process.env["SUPABASE_URL"] || import.meta.env.VITE_SUPABASE_URL), key, {
+  const key = (process.env["SUPABASE_PUBLISHABLE_KEY"] || PUBLIC_SUPABASE_KEY);
+  const supabase = createClient((process.env["SUPABASE_URL"] || PUBLIC_SUPABASE_URL), key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
       headers: { Authorization: `Bearer ${token}` },
