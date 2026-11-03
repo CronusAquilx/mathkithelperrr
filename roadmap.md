@@ -1,5 +1,11 @@
 # Birchbeat import roadmap
 
+## Flux continuation after CORS update
+- [x] Reuse existing Flux secrets and verify AWS bucket CORS read-only; all three reported origins pass preflight.
+- [x] Verify actual browser PUT 200 from allowed public origin, confirmation and list readback using current preview code.
+- [ ] Repair share response compatibility and verify share/copy/download.
+- [ ] Run Storage tests and inspect automatic build; update docs with exact results and any published-connection blocker.
+
 ## Production finalization
 - [x] Audit routes, metadata and boundaries; repair auth startup recovery, movie hook order, movie test mocks and relay address screening without removing features.
 - [x] Full suite: 41 files / 210 tests passed. New security/auth/Storage code has zero lint errors; full legacy lint has 5197 errors / 41 warnings, mostly formatting and explicit-any debt. Platform automatic builds report build OK; no duplicate manual typecheck/build was launched.
