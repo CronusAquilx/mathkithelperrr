@@ -71,6 +71,7 @@ export async function executeStorage(
     url.searchParams.set("externalUserId", userId);
     if (input.folder) url.searchParams.set("prefix", `${input.folder}/`);
   }
+  let received = false;
   try {
     const response = await request(url, {
       method: input.operation === "list" ? "GET" : "POST",
@@ -92,6 +93,7 @@ export async function executeStorage(
         error: messages[response.status] ?? "Storage service is unavailable. Please retry.",
       };
     }
+    received = true;
     if (input.operation === "confirm") return { ok: true, operation: "confirm" };
     const body: unknown = await response.json();
     if (input.operation === "list") {
@@ -135,7 +137,8 @@ export async function executeStorage(
     );
     // Never echo arbitrary provider fields, error bodies, configuration or headers.
     if (input.operation === "upload") {
-      if (obj["key"] !== input.key || obj["contentType"] !== input.contentType) throw new Error();
+      const returnedKey = obj["key"];
+      if ((returnedKey !== input.key && returnedKey !== `birchos/${userId}/${input.key}`) || obj["contentType"] !== input.contentType) throw new Error();
       return {
         ok: true,
         operation: "upload",
@@ -150,7 +153,7 @@ export async function executeStorage(
     return {
       ok: false,
       status: 502,
-      error: "Storage could not complete the request. Please retry.",
+      error: received ? `Flux returned an incompatible ${input.operation} response. Please check the integration API contract.` : "Storage could not reach Flux. Check the connection and retry.",
     };
   }
 }
