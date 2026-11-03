@@ -1,10 +1,9 @@
-# Fluxlinkk Storage
+# Birch OS production finalization
 
-- Preserve Birch's existing AuthProvider, authenticated route gate, bearer middleware and database policies; no database migration or AWS changes.
-- Add a shared Storage view to the Windows app registry, Birch Store, desktop dock and navigation, plus an authenticated `/storage` page that uses the existing console frame.
-- Authenticate every operation with Birch's verified session. Server functions derive the Flux user identifier from the session, validate relative keys and upload metadata, and return only file metadata and short-lived URLs.
-- Upload bytes directly to the signed storage URL, then confirm through Birch. Include file/folder browsing, open/download, share/copy, refresh and recoverable errors.
-- Test session enforcement, identity overrides, traversal, upload limits, provider errors and request flows; document setup and verify a small real upload if account access permits.
+Preserve all current apps, authentication, account-owned preferences, layouts and routes.
 
-## Technical details
-Both `FLUX_API_BASE` and `FLUX_INTEGRATION_TOKEN` are configured. Use `src/lib/storage/` for validated schemas, server-only transport and authenticated server functions; reuse `src/components/windows/views/StorageView.tsx` across shells. The harness runs typechecks and builds automatically; run tests and lint explicitly, inspect those results, and report any unverified production check.
+1. Audit route navigation, page metadata, browser/server boundaries and configuration using the existing TanStack structure.
+2. Repair blocking runtime issues and movie test regressions; run the full tests and lint without suppressing failures.
+3. Finish Storage against the existing Flux contract, verify identity isolation and diagnose S3 preflight for the exact production/preview origins. No available AWS connection means CORS-only console instructions may remain external.
+4. Check signed-in Windows and console navigation plus mobile layout. Inspect platform-managed typecheck/production build evidence rather than launching duplicate builds.
+5. Update setup documentation and roadmap, review security, and request publication of the latest working snapshot. Report deployment status honestly and leave Storage unverified if browser PUT still requires external CORS changes.

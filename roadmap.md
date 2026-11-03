@@ -1,5 +1,13 @@
 # Birchbeat import roadmap
 
+## Production finalization
+- [x] Audit routes, metadata and boundaries; repair auth startup recovery, movie hook order, movie test mocks and relay address screening without removing features.
+- [x] Full suite: 41 files / 210 tests passed. New security/auth/Storage code has zero lint errors; full legacy lint has 5197 errors / 41 warnings, mostly formatting and explicit-any debt. Platform automatic builds report build OK; no duplicate manual typecheck/build was launched.
+- [x] Real Flux listing/upload URL succeed; exact public and preview S3 preflights both return 403. Secret values remain server-only. Upload/confirm/download/share tests pass, but completed real transfer is not claimed.
+- [x] Actual signed-in Windows Storage, Settings, Movies, Music, Games, Browser and Store opened with no page errors; PS5 home and mobile Xbox rendered. Mobile Windows Storage/Music/Settings have no horizontal overflow.
+- [x] Document CORS-only external steps and verification limitations in docs/production-finalization.md; request deployment and report the result in chat.
+- [ ] External: Flux bucket owner adds the exact CORS rule in docs/storage-cors.json; then real PUT/confirmation/download/share must be rechecked. No AWS connection is available here.
+
 ## Current request — Fluxlinkk Storage integration
 - [x] Inspect Birch authentication, shared app views, existing schema/RLS and configured secret names.
 - [x] Add authenticated, account-scoped Flux operations and shared Storage app with direct signed uploads.
