@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Storage uses shared shell-neutral views and authenticated Birch server functions with verified session IDs; Flux transport is server-only and bytes go directly to signed URLs to preserve account isolation without a second storage integration.
+- Flux accepts only its known HTTP/HTTPS service origin, canonicalizes to HTTPS before authentication, and rejects every redirect without following Location to prevent bearer leakage and POST-to-GET changes.
 - Deploy the complete TanStack Start server and client through Lovable's managed Nitro fetch/Worker target; never substitute a static export or Node start command because authenticated APIs and WebSocket upgrades require the full runtime. Public health is credential-free liveness, not a Storage readiness claim.
 - The authenticated HTTP relay validates global addresses and redirect targets through a server-only public-target helper; never allow private network requests or return raw transport exceptions.
 

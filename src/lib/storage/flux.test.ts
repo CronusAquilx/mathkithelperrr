@@ -1,12 +1,70 @@
 import { describe, expect, it, vi } from "vitest";
-import { executeStorage, missingFluxNames } from "./flux.server";
+import { canonicalFluxBase, executeStorage, missingFluxNames } from "./flux.server";
 import { MAX_UPLOAD_BYTES, storageInput } from "./schema";
 
 const user = "12345678-1234-4234-8234-123456789012";
 // Synthetic fixture configuration, never project credentials.
-const env = { base: "https://flux.example", token: "fixture-only" };
+const env = { base: "https://fluxlinkk.lovable.app", token: "fixture-only" };
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 describe("Flux storage account boundaries", () => {
+  it("upgrades only the known HTTP origin to HTTPS before sending credentials", async () => {
+    const fetcher = vi.fn().mockResolvedValue(response({ objects: [] }));
+    await executeStorage(
+      user,
+      { operation: "list" },
+      { ...env, base: "http://fluxlinkk.lovable.app" },
+      fetcher,
+    );
+    expect(fetcher.mock.calls[0]?.[0].origin).toBe("https://fluxlinkk.lovable.app");
+    expect(fetcher.mock.calls[0]?.[1].redirect).toBe("manual");
+  });
+  it("normalizes the known origin's trailing slash", () => {
+    expect(canonicalFluxBase("https://fluxlinkk.lovable.app/").origin).toBe(
+      "https://fluxlinkk.lovable.app",
+    );
+  });
+  it.each([
+    "https://evil.example",
+    "https://fluxlinkk.lovable.app.evil.example",
+    "https://fluxlinkk.lovable.app/api",
+    "https://fluxlinkk.lovable.app?token=x",
+    "https://fluxlinkk.lovable.app/#fragment",
+    "https://user:password@fluxlinkk.lovable.app",
+    "https://fluxlinkk.lovable.app:444",
+    "https://fluxlinkk.lovable.app//",
+  ])("rejects unexpected Flux configuration %s before sending credentials", async (base) => {
+    const fetcher = vi.fn();
+    expect(
+      await executeStorage(user, { operation: "list" }, { ...env, base }, fetcher),
+    ).toMatchObject({ ok: false, status: 503 });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+  it.each([301, 302, 303, 307, 308])(
+    "rejects HTTP %s without forwarding credentials or exposing Location",
+    async (status) => {
+      const fetcher = vi.fn().mockResolvedValue(
+        new Response(null, {
+          status,
+          headers: { Location: "https://evil.example/path?token=fixture-sensitive" },
+        }),
+      );
+      const result = await executeStorage(
+        user,
+        { operation: "upload", key: "a.txt", size: 1, contentType: "text/plain" },
+        env,
+        fetcher,
+      );
+      expect(result).toEqual({
+        ok: false,
+        status: 502,
+        error: `Flux API returned HTTP ${status} redirect. No redirect was followed; check the Flux API routing.`,
+      });
+      expect(fetcher).toHaveBeenCalledTimes(1);
+      expect(fetcher.mock.calls[0]?.[1].redirect).toBe("manual");
+      expect(fetcher.mock.calls[0]?.[1].method).toBe("POST");
+      expect(JSON.stringify(result)).not.toContain("fixture-sensitive");
+    },
+  );
   it.each([
     [new DOMException("fixture secret", "TimeoutError"), "timed out"],
     [new TypeError("redirect to fixture secret"), "redirected"],
@@ -33,7 +91,11 @@ describe("Flux storage account boundaries", () => {
           response({ slug: "test", kind: "file", path: "/s/test", expiresAt: null }),
         ),
     );
-    expect(result).toEqual({ ok: true, operation: "share", url: "https://flux.example/s/test" });
+    expect(result).toEqual({
+      ok: true,
+      operation: "share",
+      url: "https://fluxlinkk.lovable.app/s/test",
+    });
   });
   it.each(["//evil.example/s/test", "/\\evil.example/s/test", "https://evil.example/s/test"])(
     "rejects unsafe share path %s",
