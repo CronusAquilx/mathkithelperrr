@@ -1,5 +1,10 @@
 # Birchbeat import roadmap
 
+## Current request — focused deployed Flux share repair
+- [x] Inspect failure notes, canonical Flux client, authenticated server function and hosted runtime; both existing secrets are present and current origin passes normalization.
+- [x] Current code already upgrades the known origin to HTTPS, rejects redirects and resolves Flux relative share paths; no new reproducible code/config defect identified, so no speculative repair or deployment.
+- [ ] External: one real published upload/share check requires a signed-in birch-os account; external-project browser session is unavailable to this environment. No check attempted, test object created, share URL generated or credentials changed.
+
 ## Current request — external birch-os connection repair
 - [x] Confirm external birch-os binding and refresh supported runtime environment; existing Flux/Google/AI/admin secrets are present.
 - [x] Repair stale CLI project reference and external OAuth; confirm existing schema/grants/owner-only upload policies without overwriting data.
