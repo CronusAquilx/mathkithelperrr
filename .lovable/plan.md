@@ -1,49 +1,57 @@
-# Birch OS → birchwind migration assessment (read-only)
+# Switch Birch OS (same project, same URL) to external Supabase birch-os
 
-Nothing was changed. The counts below are row estimates for the current managed backend. No secrets or password hashes were read.
+Read-only so far. Nothing has been changed or published.
 
-## 1. How sign-in works now
-- **Username accounts:** this is the main way people sign in. The server turns each username into a made-up internal email (`<username>@username.beanblock.local`). New accounts are created on the server with `auth.admin.createUser` (email already confirmed). Sign-in uses `signInWithPassword`, with a limit on failed attempts (`allow_account_attempt`). These are normal Supabase Auth email/password accounts, not a custom login system.
-- **Google sign-in:** handled by the Lovable sign-in service (`lovable.auth.signInWithOAuth`) in `AuthPage.tsx`.
-- **Developer PIN:** checked only on the server using the `ADMIN_ACCESS_CODE` secret. Admin rights come from `user_roles`.
-- **Guest mode:** a flag in the browser tab only. Guests have no account, so there is nothing to move.
+## Current state (verified)
+- This project still runs on its Lovable-managed backend (ref fwgmgkczglnotreqjevo). The app's settings and the tools I use both point to it. birch-os (vxxnbyfbgobqdcyfmgoz) is not connected yet.
+- **In-place switch:** Lovable's docs say the built-in backend can be disconnected from this project and an external Supabase project connected instead, under More → Supabase. That means the switch can happen inside this project. I was wrong earlier when I said it couldn't. Lovable does not copy any data. Disconnecting keeps the old data; only clicking "Remove Database" afterward deletes it permanently.
+- **Sign-in:** Supabase Auth with email/password. Usernames are turned into internal emails (`<username>@username.beanblock.local`). Accounts are created on the server with `admin.createUser` and limited by `allow_account_attempt`. Google sign-in goes through Lovable's sign-in service. The developer PIN uses the `ADMIN_ACCESS_CODE` secret plus `user_roles`.
+- **Data, by row count:** profiles 2, user_roles 3, user_preferences 2, watch_history 212, game_saves 4, threads 1, messages 2, usage_events 1, social_players 2, social_posts 1, social_blocks 1, models 3, reasoning_levels 5, tools 6, account_attempts 3. The other tables are empty.
+- **Database code:** the `app_role` type, nine functions that run with elevated rights (has_role, handle_new_user, allow_account_attempt, social_*), and the `on_auth_user_created` trigger. Every table has owner or admin access rules. Table links: messages→threads, social_members/social_posts→social_parties, social_reports→social_posts.
+- **File storage:** the private `astra-images` and `backgrounds` buckets, with owner-only access rules.
+- **Flux:** files are stored under each Birch user ID. They stay linked to the right accounts as long as user IDs are kept, and nothing changes in Flux.
 
-## 2. Can passwords be kept?
-- Supabase stores passwords as bcrypt hashes in `auth.users.encrypted_password`. Bcrypt doesn't depend on the project, so a hash copied as-is into birchwind will still work. User IDs can be kept too, because the `id` value can be copied over directly.
-- **No migration tooling exists in this repo.** There is no export script, and the read-only database role here can't read the `auth` schema at all. Copying users needs a privileged dump of `auth.users` and `auth.identities` that keeps the exact `id` and `encrypted_password` (and `raw_user_meta_data`). Only someone with owner access to both databases can do that. Existing sign-in sessions and refresh tokens will **not** carry over, so everyone signs in again once.
-- **Google accounts:** their identity rows can be copied, but birchwind must have Google sign-in enabled. Lovable's sign-in service may not work with an external project, so Google sign-in needs its own check after the move.
+## Steps you must do or approve (I can't do these)
+1. **Disconnect and connect:** a workspace admin disconnects the Lovable backend and connects birch-os under More → Supabase, in this project. I have no tool for this step.
+2. **Copy accounts:** this needs owner-level database access on both sides. The read-only role I have can't read the `auth` schema or file storage. To keep user IDs and passwords, someone with owner access must copy `auth.users` and `auth.identities` as they are, including the password hashes. Supabase passwords are bcrypt hashes and keep working in another project. Sign-in sessions don't carry over, so everyone signs in again once.
+3. **Re-enter secrets in birch-os:** `ADMIN_ACCESS_CODE`, `GOOGLE_API_KEY`, `FLUX_API_BASE`, `FLUX_INTEGRATION_TOKEN`, and `LOVABLE_API_KEY` (only if AI chat stays on the Lovable gateway). After the switch, I'll re-check which ones exist, by name only.
+4. **birch-os sign-in settings:** turn on email sign-in, set the site and redirect URLs (published, preview, beatbirch-melody-grove), and set up Google with your own Google sign-in credentials. Lovable's managed Google sign-in may not work with an external project.
+5. **Never click "Remove Database"** on the old backend until everything is verified.
 
-## 3. What has to move
-Total accounts is about 2 (2 profiles, 3 role rows).
+## Staged plan
+**Stage 0 – Backup (before anything changes)**
+- Export the database (More → Database → Manage → Settings → Export data).
+- Owner-level dump of the `auth` and `public` schemas, plus a copy of the files in both buckets.
+- Record row counts per table as a reference.
 
-- **Core tables (rows):** profiles (2), user_roles (3), user_preferences (2), watch_history (212), watchlist (0), playlists (0), game_saves (4), threads (1), messages (2) (each message belongs to a thread), memories (0), usage_events (1).
-- **Settings and catalog tables:** models (3), reasoning_levels (5), tools (6), provider_keys (0, holds secret API keys), developer_games (0).
-- **Social tables:** social_players (2), social_friends (0), social_parties (0), social_members (0) (belongs to a party), social_posts (1) (may belong to a party), social_reports (0) (belongs to a post), social_blocks (1).
-- **Internal table:** account_attempts (3). Only the server uses it, so it doesn't need copying.
-- **Links between tables:** messages→threads, social_members→social_parties, social_posts→social_parties, social_reports→social_posts. profiles and user_roles link to `auth.users` with cascade delete. Every other table stores user IDs as plain values with no link.
-- **Custom types and functions:** the `app_role` type (admin, user) and these functions: has_role, handle_new_user, allow_account_attempt, social_action, social_blocked, social_directory, social_member, social_party_owner, social_party_visible (all run with elevated rights).
-- **Trigger:** `on_auth_user_created` on `auth.users` runs `handle_new_user`, which creates the profile and role rows for each new account.
-- **Access rules (RLS):** every table limits rows to their owner (`auth.uid()`), or to admins via `has_role`. The social tables can only be read from the app; all social changes go through `social_action`. Table permissions must be granted explicitly to `authenticated` and `service_role`.
-- **File storage:** the `astra-images` and `backgrounds` buckets, both private, with owner-only access rules on `storage.objects`. The files themselves must be copied separately. I couldn't count them because the read-only role has no access.
-- **Schema source:** the database setup files live in `drizzle/migrations`. They can be replayed against birchwind, but first check that birchwind doesn't already have conflicting tables.
+**Stage 1 – Prepare birch-os (old backend stays live)**
+- Confirm birch-os is empty, so nothing conflicts.
+- Apply the Birch schema from `drizzle/migrations`: tables, permissions, access rules, functions, trigger, and the `app_role` type. Create the two private buckets and their access rules.
+- Compare tables, functions, triggers, rules and buckets against the current backend.
 
-## 4. Settings and secrets that would change
-- **Browser:** `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (and `_ANON_KEY`), `VITE_SUPABASE_PROJECT_ID`.
-- **Server:** `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_PROJECT_ID`, `SUPABASE_DB_URL`.
-- **These carry over unchanged but must be copied:** `ADMIN_ACCESS_CODE`, `GOOGLE_API_KEY`, `LOVABLE_API_KEY`, `FLUX_API_BASE`, `FLUX_INTEGRATION_TOKEN`, `LOVABLE_CRON_SECRET`.
-- **birchwind settings:** turn on email sign-in, set site and redirect URLs to the Birch origins (published, preview, beatbirch-melody-grove), set up Google sign-in, and match the email-confirmation settings.
-- **Blocker:** this project is permanently tied to Lovable Cloud. Lovable keeps the generated client files and `.env` in sync with the managed backend, so pointing them at birchwind means changing the whole project's connection, not just the code. That needs a Lovable support or workspace-level change, or a new Birch project connected to birchwind from the start.
-- **Flux storage:** files are stored under each user's ID. If user IDs stay the same, existing Flux files remain linked to the right accounts.
+**Stage 2 – Rehearse the copy**
+- Owner-level import into birch-os: `auth.users` and `auth.identities` first, with IDs and password hashes kept. Then the public tables, parent tables before the ones that point to them. Turn off `on_auth_user_created` during the import so profiles and roles aren't created twice, then turn it back on.
+- Copy the files in both buckets, keeping the same paths.
+- Check that row counts match the Stage 0 numbers.
 
-## 5. Step-by-step plan
-1. **Freeze the plan:** decide the target, either a new Birch project connected to birchwind, or a Lovable-supported change of this project's connection. The current backend stays live throughout.
-2. **Set up the schema:** apply the `drizzle/migrations` setup to birchwind, then compare tables, functions, triggers, access rules, permissions and buckets against the current backend.
-3. **Dry-run copy:** with owner access, export `auth.users` and `auth.identities` (keeping IDs and password hashes), then the public tables in link order: parent tables first (threads, social_parties, social_posts), then the tables that point to them. Copy profiles and roles directly rather than relying on the new-account trigger, or turn it off during the import (`ON CONFLICT DO NOTHING` already protects it). Copy the files in both buckets.
-4. **Check the copy:** row counts match for each table, and spot-check IDs. Test sign-in with a username account and a Google account on a preview build pointed at birchwind. Confirm one user can't see another user's rows, the admin PIN works, and a Flux Storage list still shows existing files.
-5. **Switch over:** briefly pause new sign-ups and writes, do a final copy of anything that changed, swap the settings in section 4, then publish. Everyone signs in again once.
-6. **Keep a way back:** leave the old backend untouched and read-only for a set period. Rolling back means restoring the old settings and publishing again.
+**Stage 3 – Switch connection (needs your action, step 1)**
+- After the switch, Lovable regenerates the backend settings and client files. I check that the app's settings, server functions (`requireSupabaseAuth`, the admin client, `accounts.functions.ts`, `dev-access.functions.ts`, `api/chat.ts`, Storage functions) and generated types all point to birch-os.
+- Code changes are expected to be small. I'll only fix what breaks, such as Google sign-in if Lovable's sign-in service is unavailable.
+
+**Stage 4 – Test on preview before publishing**
+- Username sign-in with an existing account: same user ID, same data.
+- Create a new username account (checks the trigger and roles). Developer PIN. Google sign-in.
+- Check one user can't see another user's data (watch history, saves, preferences, social).
+- Flux Storage list still shows existing files.
+- Focused tests, plus a check that the build passes.
+
+**Stage 5 – Go live**
+- Brief pause on writes, a final copy of anything that changed, then you approve publishing to https://mathkithelperrr.lovable.app.
+
+**Rollback**
+- Until "Remove Database" is clicked, the old backend stays intact. Reconnecting it and publishing the previous version restores everything. Keep it for a set period before removing it.
 
 ## Open questions
-- Is birchwind empty, or does it already have Birch tables or users?
-- Who has owner access to export from both databases?
-- Should Google sign-in keep working after the move?
+- Is birch-os empty right now?
+- Who will run the owner-level account and file copy? This step decides whether user IDs and passwords can be kept.
+- Should Google sign-in keep working, and do you have Google sign-in credentials ready?
