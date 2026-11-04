@@ -7,6 +7,21 @@ const user = "12345678-1234-4234-8234-123456789012";
 const env = { base: "https://flux.example", token: "fixture-only" };
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 describe("Flux storage account boundaries", () => {
+  it.each([
+    [new DOMException("fixture secret", "TimeoutError"), "timed out"],
+    [new TypeError("redirect to fixture secret"), "redirected"],
+    [new TypeError("fixture secret"), "published origin"],
+  ])("returns safe network failure categories without exception text", async (error, category) => {
+    const result = await executeStorage(
+      user,
+      { operation: "list" },
+      env,
+      vi.fn().mockRejectedValue(error),
+    );
+    expect(result).toMatchObject({ ok: false, status: 502 });
+    expect(JSON.stringify(result)).toContain(category);
+    expect(JSON.stringify(result)).not.toContain("fixture secret");
+  });
   it("resolves Flux share paths only against the configured origin", async () => {
     const result = await executeStorage(
       user,

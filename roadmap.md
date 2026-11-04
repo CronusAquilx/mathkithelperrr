@@ -1,11 +1,17 @@
 # Birchbeat import roadmap
 
+## Production architecture and publication
+- [x] Inspect actual TanStack/Nitro server entry, runtime, assets and configured environment names; retain Lovable full-stack hosting and private Flux/S3 file storage.
+- [x] Add credential-free public liveness endpoint and deployment documentation; do not invent a Node production start for a Worker application.
+- [x] 42 files / 218 tests pass; scoped health/Storage lint clean; automatic production build OK. Publish requested and new public health HTTP 200 verified with real account/Windows/Storage rendering.
+- [ ] External: deployed Flux requests still fail at connection stage. Validate FLUX_API_BASE final public origin and Flux integration endpoint availability/access; both secret names exist, CORS is already complete. Do not claim deployed transfers succeed.
+
 ## Flux continuation after CORS update
 - [x] Reuse existing Flux secrets and verify AWS bucket CORS read-only; all three reported origins pass preflight.
 - [x] Verify actual browser PUT 200 from allowed public origin, confirmation and list readback using current preview code.
 - [x] Repair share response compatibility: Flux returns a relative path; resolve safely against configured origin. Real share/copy/page HTTP 200 and download exact-byte checks pass.
 - [x] 33 Storage tests and scoped lint pass; automatic build OK. Docs record combined current-preview server / allowed-public-origin browser PUT verification, not a claimed full deployed flow.
-- [ ] External/deployment: published Birch server fails reaching Flux while current preview succeeds; deployed configuration and publication must be reverified. No secret values or AWS settings changed.
+- [ ] External: published Birch connection to Flux still fails after new full-stack publication; final Flux origin/endpoint availability must be verified in its owning workspace. No missing secret names or AWS changes.
 
 ## Production finalization
 - [x] Audit routes, metadata and boundaries; repair auth startup recovery, movie hook order, movie test mocks and relay address screening without removing features.

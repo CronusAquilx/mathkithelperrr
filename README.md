@@ -1,8 +1,8 @@
-# Welcome to your Lovable project
+# Birch OS
 
 ## Production setup and verification
 
-See [Birch production finalization](docs/production-finalization.md) for current verification boundaries and the exact CORS-only AWS action required by Flux Storage. See [Storage setup](src/lib/storage/README.md) for the authenticated API and upload contract. Existing apps and Cloud accounts are preserved.
+See [Deployment architecture](docs/deployment.md) for the complete app hosting target, commands and health check. See [Birch production finalization](docs/production-finalization.md) for verification boundaries and [Storage setup](src/lib/storage/README.md) for the authenticated API and upload contract. The Flux bucket CORS action is already complete; existing apps and Cloud accounts are preserved.
 
 This project was built with [Lovable](https://lovable.dev).
 
