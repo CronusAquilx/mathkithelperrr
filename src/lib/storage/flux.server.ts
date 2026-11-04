@@ -2,6 +2,13 @@ import { z } from "zod";
 import { storageInput, relativeKey, type StorageResult, type StorageFile } from "./schema";
 
 type FluxEnv = { base?: string | undefined; token?: string | undefined };
+export function canonicalFluxBase(value: string | undefined): URL {
+  // Accept only the known service origin; never send the token to a configured third party.
+  if (!/^https?:\/\/fluxlinkk\.lovable\.app\/?$/i.test(value?.trim() ?? ""))
+    throw new Error("Invalid server environment variable: FLUX_API_BASE");
+  return new URL("https://fluxlinkk.lovable.app");
+}
+
 export function missingFluxNames(env: FluxEnv): string[] {
   return [
     ...(!env.base?.trim() ? ["FLUX_API_BASE"] : []),
@@ -56,16 +63,7 @@ export async function executeStorage(
     };
   let base: URL;
   try {
-    base = new URL(env.base ?? "");
-    if (
-      base.protocol !== "https:" ||
-      base.username ||
-      base.password ||
-      base.pathname !== "/" ||
-      base.search ||
-      base.hash
-    )
-      throw new Error();
+    base = canonicalFluxBase(env.base);
   } catch {
     return { ok: false, status: 503, error: "Invalid server environment variable: FLUX_API_BASE" };
   }
@@ -98,8 +96,16 @@ export async function executeStorage(
       headers: { Authorization: `Bearer ${env.token}`, "Content-Type": "application/json" },
       ...(input.operation === "list" ? {} : { body: JSON.stringify(payload) }),
       signal: AbortSignal.timeout(25000),
-      redirect: "error",
+      redirect: "manual",
     });
+    if (response.status >= 300 && response.status < 400) {
+      // Do not follow Location or expose headers, which may contain credentials.
+      return {
+        ok: false,
+        status: 502,
+        error: `Flux API returned HTTP ${response.status} redirect. No redirect was followed; check the Flux API routing.`,
+      };
+    }
     if (!response.ok) {
       const messages: Record<number, string> = {
         400: "Flux rejected this file request. Check its path and file details.",

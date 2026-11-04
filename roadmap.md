@@ -1,5 +1,9 @@
 # Birchbeat import roadmap
 
+## Current request — canonical Flux connection
+- [ ] Restrict Flux configuration to its known origin, canonicalize HTTPS and reject all API redirects without forwarding credentials.
+- [ ] Run focused Storage tests and automatic build checks, verify authenticated listing if available, and request publication when checks pass; leave the managed account binding unchanged.
+
 ## Production architecture and publication
 - [x] Inspect actual TanStack/Nitro server entry, runtime, assets and configured environment names; retain Lovable full-stack hosting and private Flux/S3 file storage.
 - [x] Add credential-free public liveness endpoint and deployment documentation; do not invent a Node production start for a Worker application.
