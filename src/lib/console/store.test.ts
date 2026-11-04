@@ -4,6 +4,15 @@ import { APPS, CATALOG, fromArcade, launchPath } from "./catalog";
 const saved = (user: string) => JSON.parse(localStorage.getItem(`console-library:${user}`) ?? "{}");
 describe("Console per-user library", () => {
  beforeEach(() => { vi.useFakeTimers(); localStorage.clear(); });
+ it("recovers from malformed installed-app cache without crashing", () => {
+  localStorage.setItem("console-library:invalid-library", JSON.stringify({ installed: "not-an-array", wishlist: [null, "cloud:gta"], lastPlayed: {} }));
+  loadLibrary("invalid-library");
+  installGame("arcade:1-fix2.html"); vi.advanceTimersByTime(10000);
+  expect(saved("invalid-library")).toEqual({ installed: ["arcade:1-fix2.html"], wishlist: ["cloud:gta"], lastPlayed: null });
+  localStorage.setItem("console-library:null-library", "null");
+  expect(() => loadLibrary("null-library")).not.toThrow();
+  vi.useRealTimers();
+ });
  it("opens Music, Movies and AI inside the current visit", () => {
   loadLibrary("media-launch-test");
   const navigate = vi.fn();

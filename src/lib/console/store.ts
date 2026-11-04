@@ -23,9 +23,11 @@ export function loadLibrary(userId: string) {
   if (loadedFor === userId) return;
   loadedFor = userId;
   userKey = userId;
-  let saved: Partial<Lib> = {};
-  try { saved = JSON.parse(localStorage.getItem(storageKey(userId)) || "{}"); } catch { /* ignore */ }
-  state = { installed: saved.installed ?? [], wishlist: saved.wishlist ?? [], lastPlayed: saved.lastPlayed ?? null, progress: {} };
+  let raw: unknown = {};
+  try { raw = JSON.parse(localStorage.getItem(storageKey(userId)) || "{}"); } catch { /* ignore */ }
+  const saved = raw && typeof raw === "object" && !Array.isArray(raw) ? raw as Record<string, unknown> : {};
+  const ids = (value: unknown): string[] => Array.isArray(value) ? value.filter((id): id is string => typeof id === "string") : [];
+  state = { installed: ids(saved["installed"]), wishlist: ids(saved["wishlist"]), lastPlayed: typeof saved["lastPlayed"] === "string" ? saved["lastPlayed"] : null, progress: {} };
   emit();
 }
 
