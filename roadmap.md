@@ -5,6 +5,7 @@
 - [x] Repair stale CLI project reference and external OAuth; confirm existing schema/grants/owner-only upload policies without overwriting data.
 - [x] Music/Movies actual API paths return JSON 200 in preview and production; reported 404 not reproducible. Harden malformed installed-app cache without redesigning UI.
 - [x] 71 focused tests pass, automatic build OK, preview sign-in renders without errors and Google request targets birch-os. Docs explain real share generation.
+- [x] Continuation: credentialed Flux endpoint reaches JSON 400 validation when user ID is intentionally omitted, without redirects or file mutations; 51 Storage/auth tests pass. Real preview/published Music and Movies return 50 tracks/20 results.
 - [ ] External: enable Google provider and allow documented /auth return URLs in Supabase; Google is currently disabled.
 - [ ] External: authenticated new-backend Storage/upload/share and preference readback require an external-project session unavailable to managed browser tooling; no real share URL generated.
 - [ ] Publish current edits to the existing public URL; deployed media/health success does not establish deployment of this turn's changes.

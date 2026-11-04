@@ -20,7 +20,9 @@ Google requires enabling its provider in birch-os Authentication → Providers w
 
 Do not paste the Google OAuth client secret into chat; configure it directly in Supabase. `GOOGLE_API_KEY` is for YouTube lookups, not Google sign-in.
 
-All existing Flux, Google/AI and admin secret names are present. Flux's unauthenticated objects endpoint returns direct JSON 401, with no redirect. Existing transport already canonicalizes only its known HTTPS origin, refuses redirects, derives externalUserId from a verified account and supports all five contracted operations. File bytes go directly to signed S3 URLs; integration credentials stay on the server.
+All existing Flux, Google/AI and admin secret names are present. Flux's unauthenticated objects endpoint returns direct JSON 401, with no redirect. A subsequent server-side request using the existing integration token, deliberately omitting externalUserId, returns JSON HTTP 400 validation rather than an authentication error, with no redirect. No provider body, credentials or headers were printed, and no other account identity was selected. This verifies credentialed endpoint reachability, not an authenticated Birch user's file listing. Existing transport already canonicalizes only its known HTTPS origin, refuses redirects, derives externalUserId from a verified account and supports all five contracted operations. File bytes go directly to signed S3 URLs; integration credentials stay on the server.
+
+Latest focused recheck: 51 Storage/auth tests pass; automatic build OK. Preview and published `/api/music` search each return 50 tracks, and `/api/movies` trending each return 20 results with JSON HTTP 200. There is no reproduced media 404 to repair in current state.
 
 This external backend has no injected/mintable managed browser session (`external_unmanaged`). Authenticated listing, saved-preference readback, private uploads and actual upload/download/share completion were therefore not verified against the new backend. Do not substitute the old account UUID or a fabricated identity for that verification.
 
