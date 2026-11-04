@@ -22,7 +22,10 @@ function safeConnectionFailure(error: unknown): string {
       ? error.name
       : "";
   const message =
-    error != null && typeof error === "object" && "message" in error && typeof error.message === "string"
+    error != null &&
+    typeof error === "object" &&
+    "message" in error &&
+    typeof error.message === "string"
       ? error.message
       : "";
   if (name === "TimeoutError" || name === "AbortError")
