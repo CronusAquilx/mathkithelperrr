@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:render": "vite build --config vite.render.config.ts && bun build deployment/runtime.ts --target=node --outfile=.render/runtime.mjs",
+    "start:render": "node deployment/start.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"

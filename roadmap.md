@@ -231,3 +231,10 @@
 - [x] In-game overlay with FPS, 1% low frame time, ping and memory for cloud (/play) and arcade players; corner move, Shift+F toggle, persisted in prefs.
 - [x] Samples the game frame's own frame rate for same-origin relayed games; host page rate otherwise.
 - [x] 12 perf-monitor/prefs tests pass; full suite 96 passed; browser-verified on Krunker (59 FPS readout, toggle, corner move).
+
+## Render-only deployment branch
+- [x] Verify GitHub write access and create render-deploy from current main.
+- [x] Add isolated Node middleware build, authenticated upgrade adapter, task draining, Render blueprint and name-only environment docs.
+- [x] Build isolated Node output; verify SSR/auth page/health and upgrade rejection; 234 existing tests and 6 Node adapter tests pass; typecheck passes; new TypeScript lint clean.
+- [ ] Push only deployment files to render-deploy and verify main is unchanged.
+- [ ] External: Render deployment and authenticated provider/Flux checks need the operator's secure environment settings; no Render service provisioned or Lovable publication requested.

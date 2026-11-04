@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: birch-os-render
+    runtime: node
+    repo: https://github.com/CronusAquilx/mathkithelperrr
+    branch: render-deploy
+    autoDeployTrigger: off
+    buildCommand: bun install --frozen-lockfile && bun run build:render
+    startCommand: bun run start:render
+    healthCheckPath: /api/public/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: BUN_VERSION
+        value: 1.4.4
+      - key: NODE_ENV
+        value: production
+      - key: BIRCH_PUBLIC_ORIGIN
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: FLUX_API_BASE
+        sync: false
+      - key: FLUX_INTEGRATION_TOKEN
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ADMIN_ACCESS_CODE
+        sync: false

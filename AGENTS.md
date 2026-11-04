@@ -58,3 +58,5 @@
 - Account preferences use owner-only user_preferences JSON storage and account-keyed device caches; identity switches load defaults or that owner's data, and guests remain memory-only.
 - Windows title shortcuts store stable catalog identifiers in shared account preferences; arcade launches reuse GamesView, movie launches use router navigation, and cloud shortcuts retain standalone playback.
 - First-account personalization edits a local draft and composes the same preview and controls as Settings; save the confirmed appearance before marking account setup complete.
+
+- Render is an opt-in branch-only deployment: vite.render.config.ts builds Nitro node-middleware, and deployment/start.mjs owns authenticated Node WebSocket upgrades with bounded background-task draining; never replace the default Lovable entry or deploy settings.
