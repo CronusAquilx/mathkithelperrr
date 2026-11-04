@@ -1,10 +1,14 @@
 # Birch Storage / Fluxlinkk
 
 Required server secrets (Project Settings → Secrets):
-- `FLUX_API_BASE`: the existing Flux site’s HTTPS origin, without a path, query, or credentials.
+- `FLUX_API_BASE`: `https://fluxlinkk.lovable.app`. Only this known host is accepted; its HTTP form is upgraded to HTTPS before sending credentials. An optional trailing slash is accepted; other hosts, ports, paths, queries and credentials are rejected.
 - `FLUX_INTEGRATION_TOKEN`: the token issued by Flux for this integration.
 
 Neither is a VITE variable. Values are never returned or logged. Missing configuration returns only missing variable names. Existing Birch authentication environment and bearer middleware remain unchanged. Publish Birch after changing secrets to apply them to the published site.
+
+All authenticated Flux requests use manual redirect handling. Every HTTP 3xx fails with its status in a fixed diagnostic; no redirect is followed, no Location value is exposed, and POST is never changed to GET.
+
+Canonical-client verification (2026-11-04): 51 focused Storage/auth tests passed, scoped lint and automatic build passed. An actual authenticated list through the current preview server returned the existing folder and four files without an error. Publication is requested separately; this preview check does not establish deployed success. Account binding, secrets, AWS settings and stored files were not changed.
 
 Birch re-verifies the authenticated user with Auth and passes that ID to Flux. All metadata operations run in server functions; strict input schemas reject identity, prefix and bucket overrides. Flux owns the bucket and `birchos/<user-id>/` isolation. No Birch database or AWS policy migration is required.
 
