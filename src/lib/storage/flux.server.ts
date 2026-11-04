@@ -15,6 +15,17 @@ const safeUrl = z
   .refine((value) => new URL(value).protocol === "https:");
 const record = z.record(z.unknown());
 
+function safeConnectionFailure(error: unknown): string {
+  // Inspect only to select fixed, credential-free messages; never return or log exceptions.
+  const name = error instanceof Error ? error.name : "";
+  const message = error instanceof Error ? error.message : "";
+  if (name === "TimeoutError" || name === "AbortError")
+    return "Storage connection timed out while reaching Flux. Check the Flux service availability.";
+  if (/redirect/i.test(message))
+    return "Flux redirected the integration request. FLUX_API_BASE must be the final published HTTPS origin without redirects.";
+  return "Storage could not reach Flux. Check the Flux published origin, network availability and FLUX_API_BASE configuration.";
+}
+
 export async function executeStorage(
   userId: string | undefined,
   raw: unknown,
@@ -167,13 +178,13 @@ export async function executeStorage(
       };
     }
     return { ok: true, operation: input.operation, url: resultUrl };
-  } catch {
+  } catch (error) {
     return {
       ok: false,
       status: 502,
       error: received
         ? `Flux returned an incompatible ${input.operation} response. Please check the integration API contract.`
-        : "Storage could not reach Flux. Check the connection and retry.",
+        : safeConnectionFailure(error),
     };
   }
 }
