@@ -17,8 +17,14 @@ const record = z.record(z.unknown());
 
 function safeConnectionFailure(error: unknown): string {
   // Inspect only to select fixed, credential-free messages; never return or log exceptions.
-  const name = error instanceof Error ? error.name : "";
-  const message = error instanceof Error ? error.message : "";
+  const name =
+    error != null && typeof error === "object" && "name" in error && typeof error.name === "string"
+      ? error.name
+      : "";
+  const message =
+    error != null && typeof error === "object" && "message" in error && typeof error.message === "string"
+      ? error.message
+      : "";
   if (name === "TimeoutError" || name === "AbortError")
     return "Storage connection timed out while reaching Flux. Check the Flux service availability.";
   if (/redirect/i.test(message))
