@@ -1,5 +1,13 @@
 # Birch OS finalization
 
+## Current production architecture verification — 2026-11-04
+
+The complete TanStack Start app is deployed on Lovable, not S3 static hosting. See [deployment architecture](deployment.md). Production browser verification reached the real account picker, confirmed the signed-in account, opened the Windows desktop and Storage, and received HTTP 200 from the newly deployed `/api/public/health` server route. This proves the new full-stack code is being served, not just an old HTML export.
+
+**Remaining external blocker:** the deployed authenticated Storage list still fails reaching Flux. Both `FLUX_API_BASE` and `FLUX_INTEGRATION_TOKEN` names exist; no missing secret name was reported. Validate that the saved `FLUX_API_BASE` is Flux's final publicly reachable HTTPS origin and that Flux's integration endpoints accept server-to-server requests without redirects or a hosting access wall. Do not rotate/duplicate credentials, change CORS again, change AWS privacy/IAM, or create infrastructure. Safe connection diagnostics distinguish timeouts and redirects without logging raw exceptions. Public upload/confirm/download/share cannot be claimed verified until the deployed list succeeds; the earlier combined-preview transfer verification remains valid only within its documented boundary.
+
+Latest tests: **42 files / 218 tests pass**; scoped health/Storage lint is clean; automatic builds report `build OK`. Whole-repository lint attempt timed out, then source/config lint completed with **5166 errors / 41 warnings**, mostly inherited formatting/explicit-any debt. These are not hidden or described as a clean entire-project lint result. The existing managed production build command remains `vite build`; no duplicate manual build/typecheck or incompatible Node start was added.
+
 All existing apps, account creation/sign-in, Cloud data, layouts, personalization, wallpaper catalog and routes are retained. Storage remains integrated into the shared Windows app and console frame rather than a second shell.
 
 ## Storage: external CORS action
