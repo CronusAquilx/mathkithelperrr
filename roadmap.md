@@ -1,5 +1,10 @@
 # Birchbeat import roadmap
 
+## Production architecture and publication
+- [x] Inspect actual TanStack/Nitro server entry, runtime, assets and configured environment names; retain Lovable full-stack hosting and private Flux/S3 file storage.
+- [x] Add credential-free public liveness endpoint and deployment documentation; do not invent a Node production start for a Worker application.
+- [ ] Verify tests and automatic production build, publish latest code, check public app and deployed authenticated Flux flow; report external blockers precisely.
+
 ## Flux continuation after CORS update
 - [x] Reuse existing Flux secrets and verify AWS bucket CORS read-only; all three reported origins pass preflight.
 - [x] Verify actual browser PUT 200 from allowed public origin, confirmation and list readback using current preview code.
