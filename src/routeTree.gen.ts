@@ -22,7 +22,6 @@ import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedMusicRouteImport } from './routes/_authenticated/music'
 import { Route as AuthenticatedPlayRouteImport } from './routes/_authenticated/play'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedStorageRouteImport } from './routes/_authenticated/storage'
 import { Route as AuthenticatedStoreRouteImport } from './routes/_authenticated/store'
 import { Route as AuthenticatedVoiceRouteImport } from './routes/_authenticated/voice'
 import { Route as AuthenticatedWebRouteImport } from './routes/_authenticated/web'
@@ -47,7 +46,6 @@ import { Route as AuthenticatedConsoleSettingsRouteImport } from './routes/_auth
 import { Route as AuthenticatedConsoleSocialRouteImport } from './routes/_authenticated/console.social'
 import { Route as AuthenticatedConsoleStoreRouteImport } from './routes/_authenticated/console.store'
 import { Route as AuthenticatedMoviesIndexRouteImport } from './routes/_authenticated/movies.index'
-import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ScramjetPSplatRouteImport } from './routes/scramjet.p.$'
 import { Route as AuthenticatedConsoleStreamAppRouteImport } from './routes/_authenticated/console.stream.$app'
 import { Route as AuthenticatedMoviesFreeVideoIdRouteImport } from './routes/_authenticated/movies.free.$videoId'
@@ -121,11 +119,6 @@ const AuthenticatedPlayRoute = AuthenticatedPlayRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedStorageRoute = AuthenticatedStorageRouteImport.update({
-  id: '/storage',
-  path: '/storage',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStoreRoute = AuthenticatedStoreRouteImport.update({
@@ -259,11 +252,6 @@ const AuthenticatedMoviesIndexRoute =
     path: '/movies/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
-  id: '/api/public/health',
-  path: '/api/public/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ScramjetPSplatRoute = ScramjetPSplatRouteImport.update({
   id: '/scramjet/p/$',
   path: '/scramjet/p/$',
@@ -334,7 +322,6 @@ export interface FileRoutesByFullPath {
   '/music': typeof AuthenticatedMusicRoute
   '/play': typeof AuthenticatedPlayRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/storage': typeof AuthenticatedStorageRoute
   '/store': typeof AuthenticatedStoreRoute
   '/voice': typeof AuthenticatedVoiceRoute
   '/web': typeof AuthenticatedWebRoute
@@ -356,7 +343,6 @@ export interface FileRoutesByFullPath {
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/social': typeof AuthenticatedConsoleSocialRoute
   '/console/store': typeof AuthenticatedConsoleStoreRoute
-  '/api/public/health': typeof ApiPublicHealthRoute
   '/scramjet/p/$': typeof ScramjetPSplatRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
   '/console/': typeof AuthenticatedConsoleIndexRoute
@@ -384,7 +370,6 @@ export interface FileRoutesByTo {
   '/music': typeof AuthenticatedMusicRoute
   '/play': typeof AuthenticatedPlayRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/storage': typeof AuthenticatedStorageRoute
   '/store': typeof AuthenticatedStoreRoute
   '/voice': typeof AuthenticatedVoiceRoute
   '/web': typeof AuthenticatedWebRoute
@@ -406,7 +391,6 @@ export interface FileRoutesByTo {
   '/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/console/social': typeof AuthenticatedConsoleSocialRoute
   '/console/store': typeof AuthenticatedConsoleStoreRoute
-  '/api/public/health': typeof ApiPublicHealthRoute
   '/scramjet/p/$': typeof ScramjetPSplatRoute
   '/chat': typeof AuthenticatedChatIndexRoute
   '/console': typeof AuthenticatedConsoleIndexRoute
@@ -436,7 +420,6 @@ export interface FileRoutesById {
   '/_authenticated/music': typeof AuthenticatedMusicRoute
   '/_authenticated/play': typeof AuthenticatedPlayRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/storage': typeof AuthenticatedStorageRoute
   '/_authenticated/store': typeof AuthenticatedStoreRoute
   '/_authenticated/voice': typeof AuthenticatedVoiceRoute
   '/_authenticated/web': typeof AuthenticatedWebRoute
@@ -458,7 +441,6 @@ export interface FileRoutesById {
   '/_authenticated/console/settings': typeof AuthenticatedConsoleSettingsRoute
   '/_authenticated/console/social': typeof AuthenticatedConsoleSocialRoute
   '/_authenticated/console/store': typeof AuthenticatedConsoleStoreRoute
-  '/api/public/health': typeof ApiPublicHealthRoute
   '/scramjet/p/$': typeof ScramjetPSplatRoute
   '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
   '/_authenticated/console/': typeof AuthenticatedConsoleIndexRoute
@@ -488,7 +470,6 @@ export interface FileRouteTypes {
     | '/music'
     | '/play'
     | '/settings'
-    | '/storage'
     | '/store'
     | '/voice'
     | '/web'
@@ -510,7 +491,6 @@ export interface FileRouteTypes {
     | '/console/settings'
     | '/console/social'
     | '/console/store'
-    | '/api/public/health'
     | '/scramjet/p/$'
     | '/chat/'
     | '/console/'
@@ -538,7 +518,6 @@ export interface FileRouteTypes {
     | '/music'
     | '/play'
     | '/settings'
-    | '/storage'
     | '/store'
     | '/voice'
     | '/web'
@@ -560,7 +539,6 @@ export interface FileRouteTypes {
     | '/console/settings'
     | '/console/social'
     | '/console/store'
-    | '/api/public/health'
     | '/scramjet/p/$'
     | '/chat'
     | '/console'
@@ -589,7 +567,6 @@ export interface FileRouteTypes {
     | '/_authenticated/music'
     | '/_authenticated/play'
     | '/_authenticated/settings'
-    | '/_authenticated/storage'
     | '/_authenticated/store'
     | '/_authenticated/voice'
     | '/_authenticated/web'
@@ -611,7 +588,6 @@ export interface FileRouteTypes {
     | '/_authenticated/console/settings'
     | '/_authenticated/console/social'
     | '/_authenticated/console/store'
-    | '/api/public/health'
     | '/scramjet/p/$'
     | '/_authenticated/chat/'
     | '/_authenticated/console/'
@@ -642,7 +618,6 @@ export interface RootRouteChildren {
   ApiSpeechRoute: typeof ApiSpeechRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   ApiVoiceReplyRoute: typeof ApiVoiceReplyRoute
-  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ScramjetPSplatRoute: typeof ScramjetPSplatRoute
   ApiPublicCgSplatRoute: typeof ApiPublicCgSplatRoute
   ApiPublicFpSplatRoute: typeof ApiPublicFpSplatRoute
@@ -740,13 +715,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/storage': {
-      id: '/_authenticated/storage'
-      path: '/storage'
-      fullPath: '/storage'
-      preLoaderRoute: typeof AuthenticatedStorageRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/store': {
@@ -917,13 +885,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMoviesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/health': {
-      id: '/api/public/health'
-      path: '/api/public/health'
-      fullPath: '/api/public/health'
-      preLoaderRoute: typeof ApiPublicHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/scramjet/p/$': {
       id: '/scramjet/p/$'
       path: '/scramjet/p/$'
@@ -1006,7 +967,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMusicRoute: typeof AuthenticatedMusicRoute
   AuthenticatedPlayRoute: typeof AuthenticatedPlayRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedStorageRoute: typeof AuthenticatedStorageRoute
   AuthenticatedStoreRoute: typeof AuthenticatedStoreRoute
   AuthenticatedVoiceRoute: typeof AuthenticatedVoiceRoute
   AuthenticatedWebRoute: typeof AuthenticatedWebRoute
@@ -1039,7 +999,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMusicRoute: AuthenticatedMusicRoute,
   AuthenticatedPlayRoute: AuthenticatedPlayRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedStorageRoute: AuthenticatedStorageRoute,
   AuthenticatedStoreRoute: AuthenticatedStoreRoute,
   AuthenticatedVoiceRoute: AuthenticatedVoiceRoute,
   AuthenticatedWebRoute: AuthenticatedWebRoute,
@@ -1081,7 +1040,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSpeechRoute: ApiSpeechRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   ApiVoiceReplyRoute: ApiVoiceReplyRoute,
-  ApiPublicHealthRoute: ApiPublicHealthRoute,
   ScramjetPSplatRoute: ScramjetPSplatRoute,
   ApiPublicCgSplatRoute: ApiPublicCgSplatRoute,
   ApiPublicFpSplatRoute: ApiPublicFpSplatRoute,

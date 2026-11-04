@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Bot, Brain, Film, Gamepad2, Globe, Home, Music, Settings, Users, Wifi, Volume2, Search, LayoutGrid, HardDrive } from "lucide-react";
+import { Bot, Brain, Film, Gamepad2, Globe, Home, Music, Settings, Users, Wifi, Volume2, Search, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAppearance, usePrefs } from "@/lib/astra/prefs";
 import { AppIcon } from "./AppIcon";
@@ -8,7 +8,6 @@ import { AppIcon } from "./AppIcon";
 export const DESKTOP_APPS = [
   { to: "/home", label: "Home", icon: Home, tone: "aqua", focus: "all" },
   { to: "/store", label: "Store", icon: LayoutGrid, tone: "cyan", focus: "all" },
-  { to: "/storage", label: "Storage", icon: HardDrive, tone: "cyan", focus: "all" },
   { to: "/games", label: "Games", icon: Gamepad2, tone: "green", focus: "games" },
   { to: "/web", label: "Browser", icon: Globe, tone: "cyan", focus: "web" },
   { to: "/movies", label: "Movies", icon: Film, tone: "coral", focus: "movies" },

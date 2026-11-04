@@ -1,5 +1,4 @@
 export const STORE_APPS = [
-  { id: "storage", title: "Storage", category: "Productivity", detail: "Your private files and share links", tone: "cyan" },
   { id: "music", title: "Birch Music", category: "Entertainment", detail: "Your music, playlists and discoveries", tone: "green" },
   { id: "movies", title: "Movies & Anime", category: "Entertainment", detail: "Movies, shows and animation", tone: "coral" },
   { id: "games", title: "Birch Arcade", category: "Gaming", detail: "Arcade and cloud games", tone: "cyan" },

@@ -24,7 +24,6 @@ import { WebsiteFullscreenButton } from "@/components/FullscreenButton";
 import { removeDesktopShortcut, type DesktopShortcut } from "@/lib/windows/desktop-shortcuts";
 
 const MusicView = lazy(() => import("./views/MusicView").then(m => ({ default: m.MusicView })));
-const StorageView = lazy(() => import("./views/StorageView").then(m => ({ default: m.StorageView })));
 const MoviesView = lazy(() => import("./views/MoviesView").then(m => ({ default: m.MoviesView })));
 const GamesView = lazy(() => import("./views/GamesView").then(m => ({ default: m.GamesView })));
 const WebView = lazy(() => import("./views/WebView").then(m => ({ default: m.WebView })));
@@ -36,7 +35,6 @@ const SocialHub = lazy(() => import("@/components/social/SocialHub").then(m => (
 const APPS = [
   { id: "home", title: "Home", icon: Home, tone: "cyan" },
   { id: "store", title: "Birch Store", icon: LayoutGrid, tone: "cyan" },
-  { id: "storage", title: "Storage", icon: LayoutGrid, tone: "cyan" },
   { id: "games", title: "Games", icon: Gamepad2, tone: "green" },
   { id: "web", title: "Browser", icon: Globe, tone: "cyan" },
   { id: "movies", title: "Movies & TV", icon: Film, tone: "coral" },
@@ -111,7 +109,6 @@ export function WindowsDesktop({ children, desktopOnly = false }: { children?: R
     switch (tab.app) {
       case "home": return home;
       case "store": return <StoreView onOpen={app => open(app)}/>;
-      case "storage": return <StorageView key={user?.id ?? "guest"}/>;
       case "music": return <MusicView/>;
       case "movies": return <MoviesView/>;
       case "games": return <GamesView initialGame={tab.game}/>;

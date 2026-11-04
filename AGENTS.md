@@ -9,11 +9,6 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Storage uses shared shell-neutral views and authenticated Birch server functions with verified session IDs; Flux transport is server-only and bytes go directly to signed URLs to preserve account isolation without a second storage integration.
-- Flux accepts only its known HTTP/HTTPS service origin, canonicalizes to HTTPS before authentication, and rejects every redirect without following Location to prevent bearer leakage and POST-to-GET changes.
-- Deploy the complete TanStack Start server and client through Lovable's managed Nitro fetch/Worker target; never substitute a static export or Node start command because authenticated APIs and WebSocket upgrades require the full runtime. Public health is credential-free liveness, not a Storage readiness claim.
-- The authenticated HTTP relay validates global addresses and redirect targets through a server-only public-target helper; never allow private network requests or return raw transport exceptions.
-
 - Cloud games default to the standalone /play view to avoid mounting the app shell during gameplay; keep inline playback as an explicit fallback.
 - Use only verified provider-native graphics controls; FivePlay profiles live in the shared game-performance module so other providers never receive invented engine flags.
 - Gameplay's lightweight styling is temporary and must not overwrite the user's saved appearance preferences.
@@ -24,7 +19,6 @@
 - Opening choices and explicit account confirmation are document-scoped through VisitProvider; persisted preferences or restored auth sessions never mark a new visit complete, and standalone gameplay bypasses this flow.
 - Layout selection precedes the shared account picker on each document; account-specific device/focus setup is saved in profiles so returning users are not asked again.
 - Username accounts use normalized internal Auth email identities and optional contact email, with server-only identity resolution and rate-limited password verification; usernames never grant roles.
-- App-owned OAuth uses the connected external Supabase Auth directly and returns to public /auth; the Lovable managed broker cannot authenticate external-project accounts.
 - Guest mode is a session-tab flag in AuthProvider that lets the signed-in layouts render with no Auth session; nothing saves because database policies only accept signed-in users, so never give guests an anonymous Auth user.
 - Developer sign-in is hidden: no visible entry; the account screen opens a PIN pad via a keyboard shortcut or an invisible corner button, and the PIN is checked only on the server.
 - Console media and arcade launches use router navigation to retain the current document's visit confirmation; cloud games alone open the standalone player tab.

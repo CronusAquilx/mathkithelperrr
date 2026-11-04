@@ -69,7 +69,6 @@
     "eventsource-parser": "^4.1.3",
     "fflate": "^0.8.3",
     "input-otp": "^1.4.2",
-    "ipaddr.js": "^2.5.0",
     "kokoro-js": "^1.2.1",
     "lucide-react": "^0.575.0",
     "mammoth": "^1.13.0",
