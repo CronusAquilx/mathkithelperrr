@@ -1,5 +1,11 @@
 # Birchbeat import roadmap
 
+## Current request — external birch-os connection repair
+- [x] Confirm external birch-os binding and refresh supported runtime environment; existing Flux/Google/AI/admin secrets are present.
+- [ ] Repair remaining old project references and external OAuth, inspect existing schema/private uploads without overwriting data.
+- [ ] Resolve Music/Movies API 404s and inspect installed-app runtime safety; preserve games/UI.
+- [ ] Run focused tests and minimal live integration checks; report authentication/publication limitations and share-link generation.
+
 ## Current request — canonical Flux connection
 - [x] Restrict Flux configuration to its known origin, canonicalize HTTPS and reject all API redirects without forwarding credentials.
 - [x] 51 focused Storage/auth tests, scoped lint and automatic build pass; authenticated preview listing returns existing folder/four files without errors. Request publication; managed account binding unchanged.
