@@ -5,7 +5,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Plus, UserRound, ArrowLeft, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { usePrefs, activatePreferenceAccount, getPrefsSnapshot } from "@/lib/astra/prefs";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -60,8 +59,8 @@ export function AuthPage() {
     }
     catch(err){setMessage(err instanceof Error?err.message:"Couldn't continue as guest.");}finally{setBusy(false);}
   }
-  async function social(provider:"google"|"lovable") {
-    const result=await lovable.auth.signInWithOAuth(provider,{redirect_uri:window.location.origin});
+  async function social() {
+    const result=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth`}});
     if(result.error)toast.error(result.error.message??"Sign-in failed");
     else{const verified=await supabase.auth.getUser();if(verified.data.user)await enter();}
   }
@@ -81,7 +80,7 @@ export function AuthPage() {
         <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" autoComplete={mode==="up"?"new-password":"current-password"} required minLength={mode==="up"?6:1} value={password} onChange={e=>setPassword(e.target.value)}/></div>
         {mode==="up"&&<><div className="space-y-2"><Label htmlFor="contact-email">Email (optional)</Label><Input id="contact-email" type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></div><p className="text-xs text-console-foreground/65">Use your username to sign in. Optional email is contact information only; email password recovery isn&apos;t available for username accounts.</p></>}
         <div className="flex gap-3 pt-3"><Button type="button" variant="outline" className="flex-1" onClick={()=>change("picker")}>Cancel</Button><Button type="submit" className="flex-1" disabled={busy}>{busy?"Please wait…":mode==="up"?"Create account":"Sign in"}</Button></div>
-      </form><div className="mt-5 flex flex-wrap justify-center gap-2"><Button variant="ghost" onClick={()=>void social("google")}>Google</Button><Button variant="ghost" onClick={()=>void social("lovable")}>Lovable</Button><Button variant="ghost" onClick={()=>change(mode==="up"?"in":"up")}>{mode==="up"?"Already have an account?":"Add User"}</Button><Button variant="ghost" disabled={busy} onClick={guest}>Continue as guest</Button></div></div>}
+      </form><div className="mt-5 flex flex-wrap justify-center gap-2"><Button variant="ghost" onClick={()=>void social()}>Google</Button><Button variant="ghost" onClick={()=>change(mode==="up"?"in":"up")}>{mode==="up"?"Already have an account?":"Add User"}</Button><Button variant="ghost" disabled={busy} onClick={guest}>Continue as guest</Button></div></div>}
       {message&&<p role="alert" className="mt-5 max-w-md text-sm text-destructive">{message}</p>}
     </main></ConsoleShell>;
 }
