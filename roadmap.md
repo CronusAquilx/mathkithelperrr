@@ -1,8 +1,9 @@
 # Birchbeat import roadmap
 
 ## Current request — Trollhunters episode 20
-- [ ] Repair loaded/error detection and bounded source retries without changing verified episode numbering.
-- [ ] Run focused playback-state tests; check episode 20 where proxy access is available.
+- [x] Repair loaded/error detection and bounded source retries without changing verified episode numbering; error pages no longer stop failover.
+- [x] Seven focused tests pass and preview build is clean; episode 20 now retries sources and stops after exhaustion.
+- [ ] Confirm actual episode 20 playback — automated guest proxy receives 401 Unauthorized on every source; external unmanaged account sessions cannot be restored here, so provider availability remains unverified.
 
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.
