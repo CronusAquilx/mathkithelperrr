@@ -225,7 +225,7 @@ function Watch() {
     if (loaded || sourcesExhausted || voice !== 'auto' || manualSource) return;
     const timer = setTimeout(() => {
       retryFailedSource();
-    }, 45000);
+    }, 25000);
     return () => clearTimeout(timer);
   }, [server, season, episode, n, loaded, sourcesExhausted, voice, manualSource]);
 

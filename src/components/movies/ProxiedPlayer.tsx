@@ -5,7 +5,7 @@ import { attachProxiedPopups } from "@/lib/astra/proxy-popups";
 import { discoverVoiceTracks, voiceLabel, type VoiceTrack } from "@/lib/movies/audio-tracks";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { matchesVoice, VOICE_SEARCH_WAIT_MS } from "@/lib/movies/voice-search";
-import { readPlaybackState } from "@/lib/movies/playback-state";
+import { readPlaybackDetails } from "@/lib/movies/playback-state";
 
 /**
  * Plays a streaming source (VidSrc, APIPlayer, …) through the site's proxy so the
@@ -51,12 +51,15 @@ export function ProxiedPlayer({ src, title, onLoad, onError, anime = false, voic
     if (!iframe) return;
     let reported = false;
     let disposed = false;
+    // A source whose video never receives data (e.g. its file host refuses it) is stuck, not loading.
+    let stuckTicks = 0;
     const failed = () => { if (!reported && !disposed) { reported = true; errRef.current?.(); } };
     const loaded = () => {
       if (reported || disposed || !iframe.src.includes('/scramjet/p/')) return;
-      const state = readPlaybackState(iframe.contentWindow);
+      const { state, mediaCount } = readPlaybackDetails(iframe.contentWindow);
       if (state === 'ready') { reported = true; loadRef.current?.(); }
       else if (state === 'error') failed();
+      else if (mediaCount > 0 && ++stuckTicks >= 10) failed();
     };
     const monitor = window.setInterval(loaded, 1500);
     iframe.addEventListener("load", loaded);
