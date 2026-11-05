@@ -4,7 +4,7 @@ export type PlaybackState = 'pending' | 'ready' | 'error';
 export function playbackState(media: { readyState: number; currentTime: number; error: unknown }[], errorText: string): PlaybackState {
   if (media.some(video => !video.error && (video.readyState >= 2 || video.currentTime > 0))) return 'ready';
   if (media.some(video => Boolean(video.error))) return 'error';
-  if (/internal service worker error|astra relay error|episode (?:not found|unavailable)|playback error|no available servers|this page could not be found|error code 5\d\d|verification failed|(?:video|media|source|stream) (?:is )?(?:not found|unavailable)|no (?:sources|streams) (?:found|available)|failed to (?:load|fetch) (?:video|media|source|stream)|error loading (?:video|media)|file cannot be played/i.test(errorText)) return 'error';
+  if (/internal service worker error|astra relay error|episode (?:not found|unavailable)|no available servers found|(?:video|media|source|stream) (?:is )?(?:not found|unavailable)|no (?:sources|streams) (?:found|available)|failed to (?:load|fetch) (?:video|media|source|stream)|error loading (?:video|media)|file cannot be played/i.test(errorText)) return 'error';
   return 'pending';
 }
 
