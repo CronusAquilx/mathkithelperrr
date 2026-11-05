@@ -219,15 +219,15 @@ function Watch() {
     else setSourcesExhausted(true);
   }
 
-  // Auto-pick a new source when the current one doesn't load in time.
-  useEffect(() => { setLoaded(false); triedRef.current.add(server); }, [server, season, episode, n]);
+  // Only explicit errors switch sources automatically; a slow or click-to-play
+  // source is never pulled away from the viewer, they just get a hint.
+  const [slowSource, setSlowSource] = useState(false);
+  useEffect(() => { setLoaded(false); setSlowSource(false); triedRef.current.add(server); }, [server, season, episode, n]);
   useEffect(() => {
-    if (loaded || sourcesExhausted || voice !== 'auto' || manualSource) return;
-    const timer = setTimeout(() => {
-      retryFailedSource();
-    }, 25000);
+    if (loaded || sourcesExhausted) return;
+    const timer = setTimeout(() => setSlowSource(true), 25000);
     return () => clearTimeout(timer);
-  }, [server, season, episode, n, loaded, sourcesExhausted, voice, manualSource]);
+  }, [server, season, episode, n, loaded, sourcesExhausted]);
 
   const s = STREAMING_SERVERS.find((x) => x.id === server) ?? STREAMING_SERVERS[0];
   if (!s) return null;
@@ -277,6 +277,7 @@ function Watch() {
           {fakeFullscreen && <Button type="button" variant="secondary" size="icon" onClick={() => setFakeFullscreen(false)} aria-label="Exit fullscreen" className="absolute right-3 top-3 z-10 rounded-full"><Minimize2 /></Button>}
         </div>
         {!fullscreen && !fakeFullscreen && <>
+          {slowSource && !loaded && !sourcesExhausted && <p role="status" className="mt-3 text-sm text-muted-foreground">Still loading? <button type="button" className="font-medium text-foreground underline" onClick={tryNextServer}>Try the next server</button></p>}
           {sourcesExhausted && <p role="status" className="mt-3 text-sm text-muted-foreground">No source loaded this episode. The sources may be unavailable or missing it.</p>}
           {voice !== 'auto' && <div className="mt-3 space-y-2">
             <p role="status" className="text-sm text-muted-foreground">{manualSource ? `Automatic language search paused · ${sourceName}` : voiceStatus === 'found' ? `${voice === 'en' ? 'English' : 'Japanese'} audio selected on ${sourceName}.` : voiceStatus === 'missing' ? `These sources did not expose a verifiable ${voice === 'en' ? 'English' : 'Japanese'} track. This does not mean a dub does not exist.` : `Looking for ${voice === 'en' ? 'English' : 'Japanese'} audio · ${sourceName} · ${voiceTried.current.size + 1}/${voiceSources.length}`}</p>
