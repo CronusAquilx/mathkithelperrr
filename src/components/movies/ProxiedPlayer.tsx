@@ -5,7 +5,6 @@ import { attachProxiedPopups } from "@/lib/astra/proxy-popups";
 import { discoverVoiceTracks, voiceLabel, type VoiceTrack } from "@/lib/movies/audio-tracks";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { matchesVoice, VOICE_SEARCH_WAIT_MS } from "@/lib/movies/voice-search";
-import { readPlaybackDetails } from "@/lib/movies/playback-state";
 
 /**
  * Plays a streaming source (VidSrc, APIPlayer, …) through the site's proxy so the
@@ -49,21 +48,13 @@ export function ProxiedPlayer({ src, title, onLoad, onError, anime = false, voic
   useEffect(() => {
     const iframe = ref.current;
     if (!iframe) return;
-    let reported = false;
-    let disposed = false;
-    const failed = () => { if (!reported && !disposed) { reported = true; errRef.current?.(); } };
-    const loaded = () => {
-      if (reported || disposed || !iframe.src.includes('/scramjet/p/')) return;
-      const { state } = readPlaybackDetails(iframe.contentWindow);
-      if (state === 'ready') { reported = true; loadRef.current?.(); }
-      else if (state === 'error') failed();
-    };
-    const monitor = window.setInterval(loaded, 1500);
+    let first = true;
+    const loaded = () => { if (first && iframe.src.includes("/scramjet/p/")) { first = false; loadRef.current?.(); } };
     iframe.addEventListener("load", loaded);
     const detach = attachProxiedPopups(iframe, src, prefs);
-    openProxied(iframe, src, prefs).catch(failed);
+    openProxied(iframe, src, prefs).catch(() => errRef.current?.());
     const stopKeepAlive = keepProxyAlive(prefs);
-    return () => { disposed = true; window.clearInterval(monitor); stopKeepAlive(); iframe.removeEventListener("load", loaded); detach(); };
+    return () => { stopKeepAlive(); iframe.removeEventListener("load", loaded); detach(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, prefs.transport, prefs.wisp]);
   const active = tracks.find(track => track.active)?.id;

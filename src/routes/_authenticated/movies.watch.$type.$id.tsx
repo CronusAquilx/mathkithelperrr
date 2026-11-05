@@ -46,7 +46,6 @@ function Watch() {
   const [server, setServerRaw] = useState(() => { if (localStorage.getItem("astra-watch-mode") === "school") return "apiplayer"; const saved = localStorage.getItem("astra-movie-server"); return saved && STREAMING_SERVERS.some((x) => x.id === saved) ? saved : STREAMING_SERVERS[0]?.id ?? ""; });
   const setServer = (v: string) => { if (!school) setServerRaw(v); };
   const [loaded, setLoaded] = useState(false);
-  const [sourcesExhausted, setSourcesExhausted] = useState(false);
   const triedRef = useRef<Set<string>>(new Set());
   const voiceTried = useRef(new Set<string>());
   const [voice, setVoice] = useState('auto');
@@ -211,23 +210,18 @@ function Watch() {
     };
   }, [fakeFullscreen]);
 
-  useEffect(() => { triedRef.current = new Set(); setSourcesExhausted(false); }, [n, season, episode]);
+  useEffect(() => { triedRef.current = new Set(); }, [n, season, episode]);
 
-  function retryFailedSource() {
-    const next = (school ? STREAMING_SERVERS.filter(source => source.id === 'apiplayer') : STREAMING_SERVERS).find(source => !triedRef.current.has(source.id));
-    if (next) setServer(next.id);
-    else setSourcesExhausted(true);
-  }
-
-  // Only explicit errors switch sources automatically; a slow or click-to-play
-  // source is never pulled away from the viewer, they just get a hint.
-  const [slowSource, setSlowSource] = useState(false);
-  useEffect(() => { setLoaded(false); setSlowSource(false); triedRef.current.add(server); }, [server, season, episode, n]);
+  // Auto-pick a new source when the current one doesn't load in time.
+  useEffect(() => { setLoaded(false); triedRef.current.add(server); }, [server, season, episode, n]);
   useEffect(() => {
-    if (loaded || sourcesExhausted) return;
-    const timer = setTimeout(() => setSlowSource(true), 25000);
+    if (loaded || voice !== 'auto' || manualSource) return;
+    const timer = setTimeout(() => {
+      const next = STREAMING_SERVERS.find((x) => !triedRef.current.has(x.id));
+      if (next) setServer(next.id);
+    }, 12000);
     return () => clearTimeout(timer);
-  }, [server, season, episode, n, loaded, sourcesExhausted]);
+  }, [server, season, episode, n, loaded, voice, manualSource]);
 
   const s = STREAMING_SERVERS.find((x) => x.id === server) ?? STREAMING_SERVERS[0];
   if (!s) return null;
@@ -259,7 +253,6 @@ function Watch() {
   }, [fakeFullscreen]);
 
   function tryNextServer() {
-    setSourcesExhausted(false);
     const index = STREAMING_SERVERS.findIndex((item) => item.id === server);
     setServer(STREAMING_SERVERS[(index + 1) % STREAMING_SERVERS.length]?.id ?? STREAMING_SERVERS[0]?.id ?? server);
   }
@@ -273,12 +266,10 @@ function Watch() {
       </header>
       <div className={cn("mx-auto px-3 py-3 sm:px-5", theater ? "max-w-none" : "max-w-7xl")}>
         <div ref={playerRef} className={cn("relative overflow-hidden border border-border bg-card shadow-2xl", theater ? "h-[76dvh]" : "aspect-video", fakeFullscreen && "fixed inset-0 z-50 h-dvh w-screen border-0", fullscreen ? "h-screen w-screen border-0" : "rounded-md")}>
-          {!ready ? <div className="grid size-full place-items-center text-sm text-muted-foreground">Finding where you left off…</div> : <ProxiedPlayer key={`${server}-${season}-${episode}-${caption}`} src={embedUrl} anime={isAnime} voice={voice} searchAttempt={voiceAttempt} autoVoiceSearch={!manualSource} {...(usingAnikoto ? {} : { onVoiceChange: chooseVoice })} onVoiceResult={voiceResult} title={`${d?.title || d?.name || "Movie"} player`} onLoad={() => { setLoaded(true); setSourcesExhausted(false); }} onError={() => { if (!manualSource) { if (voice !== 'auto') voiceResult(false); else retryFailedSource(); } }} />}
+          {!ready ? <div className="grid size-full place-items-center text-sm text-muted-foreground">Finding where you left off…</div> : <ProxiedPlayer key={`${server}-${season}-${episode}-${caption}`} src={embedUrl} anime={isAnime} voice={voice} searchAttempt={voiceAttempt} autoVoiceSearch={!manualSource} {...(usingAnikoto ? {} : { onVoiceChange: chooseVoice })} onVoiceResult={voiceResult} title={`${d?.title || d?.name || "Movie"} player`} onLoad={() => setLoaded(true)} onError={() => { if (!manualSource) { if (voice !== 'auto') voiceResult(false); else tryNextServer(); } }} />}
           {fakeFullscreen && <Button type="button" variant="secondary" size="icon" onClick={() => setFakeFullscreen(false)} aria-label="Exit fullscreen" className="absolute right-3 top-3 z-10 rounded-full"><Minimize2 /></Button>}
         </div>
         {!fullscreen && !fakeFullscreen && <>
-          {slowSource && !loaded && !sourcesExhausted && <p role="status" className="mt-3 text-sm text-muted-foreground">Still loading? <button type="button" className="font-medium text-foreground underline" onClick={tryNextServer}>Try the next server</button></p>}
-          {sourcesExhausted && <p role="status" className="mt-3 text-sm text-muted-foreground">No source loaded this episode. The sources may be unavailable or missing it.</p>}
           {voice !== 'auto' && <div className="mt-3 space-y-2">
             <p role="status" className="text-sm text-muted-foreground">{manualSource ? `Automatic language search paused · ${sourceName}` : voiceStatus === 'found' ? `${voice === 'en' ? 'English' : 'Japanese'} audio selected on ${sourceName}.` : voiceStatus === 'missing' ? `These sources did not expose a verifiable ${voice === 'en' ? 'English' : 'Japanese'} track. This does not mean a dub does not exist.` : `Looking for ${voice === 'en' ? 'English' : 'Japanese'} audio · ${sourceName} · ${voiceTried.current.size + 1}/${voiceSources.length}`}</p>
             {voiceStatus === 'missing' && <Button variant="outline" size="sm" onClick={() => { chooseVoice(voice); setServerRaw(voiceSources[0]?.id ?? server); }}>Retry language search</Button>}
