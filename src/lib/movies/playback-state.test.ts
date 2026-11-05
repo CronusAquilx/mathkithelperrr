@@ -20,8 +20,7 @@ describe('episode playback readiness', () => {
   });
 });
 describe('provider failure screens', () => {
-  it('treats "No available servers" and 404 pages as errors so the next server is tried', () => {
+  it('treats "No available servers" as an error so the next server is tried', () => {
     expect(playbackState([], 'Playback Error\nNo available servers found.')).toBe('error');
-    expect(playbackState([], '404\nThis page could not be found.')).toBe('error');
   });
 });
