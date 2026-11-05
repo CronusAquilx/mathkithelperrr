@@ -19,3 +19,9 @@ describe('episode playback readiness', () => {
     expect(playbackState([{ readyState: 2, currentTime: 0, error: null }], 'Video unavailable')).toBe('ready');
   });
 });
+describe('provider failure screens', () => {
+  it('treats "No available servers" and 404 pages as errors so the next server is tried', () => {
+    expect(playbackState([], 'Playback Error\nNo available servers found.')).toBe('error');
+    expect(playbackState([], '404\nThis page could not be found.')).toBe('error');
+  });
+});

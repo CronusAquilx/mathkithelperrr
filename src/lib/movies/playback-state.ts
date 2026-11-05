@@ -4,12 +4,17 @@ export type PlaybackState = 'pending' | 'ready' | 'error';
 export function playbackState(media: { readyState: number; currentTime: number; error: unknown }[], errorText: string): PlaybackState {
   if (media.some(video => !video.error && (video.readyState >= 2 || video.currentTime > 0))) return 'ready';
   if (media.some(video => Boolean(video.error))) return 'error';
-  if (/internal service worker error|astra relay error|episode (?:not found|unavailable)|(?:video|media|source|stream) (?:is )?(?:not found|unavailable)|no (?:sources|streams) (?:found|available)|failed to (?:load|fetch) (?:video|media|source|stream)|error loading (?:video|media)|file cannot be played/i.test(errorText)) return 'error';
+  if (/internal service worker error|astra relay error|episode (?:not found|unavailable)|playback error|no available servers|this page could not be found|error code 5\d\d|verification failed|(?:video|media|source|stream) (?:is )?(?:not found|unavailable)|no (?:sources|streams) (?:found|available)|failed to (?:load|fetch) (?:video|media|source|stream)|error loading (?:video|media)|file cannot be played/i.test(errorText)) return 'error';
   return 'pending';
 }
 
 /** Read the proxy's accessible player frames; inaccessible frames remain pending. */
 export function readPlaybackState(root: Window | null): PlaybackState {
+  return readPlaybackDetails(root).state;
+}
+
+/** Same as readPlaybackState, plus how many media elements were found. */
+export function readPlaybackDetails(root: Window | null): { state: PlaybackState; mediaCount: number } {
   const media: { readyState: number; currentTime: number; error: unknown }[] = [];
   const errors: string[] = [];
   const visit = (win: Window | null, depth: number) => {
@@ -27,5 +32,5 @@ export function readPlaybackState(root: Window | null): PlaybackState {
     } catch { /* Cross-origin provider frames cannot be inspected. */ }
   };
   visit(root, 0);
-  return playbackState(media, errors.join('\n'));
+  return { state: playbackState(media, errors.join('\n')), mediaCount: media.length };
 }
