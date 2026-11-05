@@ -1,5 +1,9 @@
 # Birchbeat import roadmap
 
+## Current request — Trollhunters episode 20
+- [ ] Repair loaded/error detection and bounded source retries without changing verified episode numbering.
+- [ ] Run focused playback-state tests; check episode 20 where proxy access is available.
+
 ## Current request — account personalization
 - [x] Expand shared appearance controls and preview: original dots/accents, liquid glass, brightness, snow/fireflies, effect speed and clocks.
 - [x] Add game/movie Windows desktop shortcuts and removal with stable title IDs and existing launch paths.
